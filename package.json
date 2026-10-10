@@ -17,6 +17,7 @@
     "validate:reference": "node --no-warnings scripts/validate-reference.ts",
     "build:benchmark": "node --env-file-if-exists=.env.local --no-warnings scripts/build-benchmark.ts",
     "eval:benchmark": "node --env-file-if-exists=.env.local --no-warnings scripts/eval-benchmark.ts",
+    "test:measure": "node --env-file-if-exists=.env.local --no-warnings scripts/test-measure.ts",
     "test:benchmark": "node --env-file-if-exists=.env.local --no-warnings scripts/test-benchmark.ts",
     "test:examiner": "node --env-file-if-exists=.env.local --no-warnings scripts/test-examiner.ts"
   },

@@ -24,6 +24,8 @@ export interface StructureDeps {
   /** Embedding call for the optional semantic signal. Required for `useSemanticSimilarity` to take effect. */
   embed?: EmbedFn;
   now?: () => Date;
+  /** Bounds for the model call, so a caller with a time budget can limit this stage. Defaults in config.ts. */
+  extraction?: { timeoutMs?: number; maxAttempts?: number };
 }
 
 const fail = (code: StructureFailure["code"], message: string, retryable = false, details?: string[]): StructureOutcome => ({
@@ -70,7 +72,7 @@ export async function analyzeEssayStructure(input: StructureAnalysisInput, deps:
 
   const warnings: AnalysisWarning[] = [...essay.warnings];
   const complete = deps.complete ?? geminiComplete;
-  const extraction = await extractElements(essay, topic, complete);
+  const extraction = await extractElements(essay, topic, complete, deps.extraction);
   if (!extraction.ok) return { ok: false, error: extraction.error };
 
   const sentenceById = new Map(essay.sentences.map((s) => [s.id, s]));

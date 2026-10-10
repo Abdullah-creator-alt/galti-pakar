@@ -62,3 +62,9 @@ export const BENCHMARK = {
   /** Stored points must stay paraphrases: no stored point may exceed this many words. */
   MAX_POINT_WORDS: 25,
 } as const;
+
+/**
+ * Time allowed for each analysis stage that runs in parallel after the essay is read. A stage that exceeds its
+ * limit is reported as failed and the others carry on. The stage itself cannot be cancelled, only abandoned.
+ */
+export const MEASURE_STAGE_TIMEOUT_MS = { structure: 30_000, analysis: 25_000, benchmark: 25_000 } as const;

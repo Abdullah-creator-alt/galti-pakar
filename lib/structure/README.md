@@ -94,6 +94,7 @@ a profile from clients.
 
 - Examiner second opinion / verification: read `argumentElements`, `argumentLinks`, `structuralFindings`; confirm or reject candidates.
 - Report generation: map `structuralFindings` (with `sentenceIds` and offsets) to highlights and wording.
+- In the pipeline the module runs through `lib/pipeline/measure.ts` (`measureEssay`), side by side with genericness+drift and the benchmark; `findingsFromStructure` (`lib/pipeline/findings.ts`) gives the examiner its paragraph-level view, and the full `StructureAnalysis` is returned for later steps. `npm run test:measure -- essay.txt --topic "..."` runs it live.
 - Wire `app/api/analyze/route.ts` to call `analyzeEssayStructure` on the transcribed text when the pipeline is ready (the route is still a mock).
 - Tests: `npm test` (mocked model, no network).
 - Live check: `npm run eval:structure` (needs `GEMINI_API_KEY` in `.env.local`) runs two fixture essays through the real model and prints
