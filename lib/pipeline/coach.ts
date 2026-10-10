@@ -1,7 +1,7 @@
 /**
- * Fixes + model paragraph. CODE decides which problems matter and which paragraph is rewritten; the LLM only explains
- * each chosen problem and rewrites that one paragraph as a teaching model. Everything it writes is verified in code.
- * It never rewrites the whole essay.
+ * Fixes + model paragraphs. CODE decides which problems matter and which paragraphs are rewritten (the weakest, plus up to
+ * COACH.MAX_REWRITES - 1 others that have measured problems); the LLM only explains each chosen problem and rewrites each
+ * chosen paragraph as a teaching model. Everything it writes is verified in code. It never rewrites the whole essay.
  */
 import { COACH, COACH_TEMPERATURE, GEMINI_COACH_FALLBACKS, GEMINI_COACH_MODEL } from "../config.ts";
 import { GeminiError, generateText, type GenerateOptions } from "../gemini.ts";
@@ -29,6 +29,8 @@ export interface CoachOptions {
   retry?: boolean;
   /** Needed only for benchmark-based fixes and rewrite inspiration. */
   benchmark?: BenchmarkResult;
+  /** How many paragraphs get a model version, the weakest first. Default COACH.MAX_REWRITES; 1 gives the old single-paragraph behaviour. */
+  maxRewrites?: number;
   /** Total time budget. Default 40 s. */
   timeoutMs?: number;
   /** Test hook: replaces the Gemini call. */
@@ -56,6 +58,8 @@ export interface CoachMetrics {
   quotesRejected: number;
   numberGuardTriggers: number;
   slotsInserted: number;
+  /** Further weak paragraphs that got a model version, besides the main one. */
+  extraRewrites: number;
   rewriteLengthRatio: number;
   retries: number;
   totalMs: number;
@@ -63,10 +67,25 @@ export interface CoachMetrics {
   models: string[];
 }
 
+/** A further weak paragraph rewritten as a teaching model. Same checks as the main one. */
+export interface MoreRewrite {
+  rewrite: Rewrite;
+  changeNotes: { what: string; why: string }[];
+  placeholders: string[];
+}
+
 export interface CoachResult {
   fixes: Fix[];
+  /** The weakest paragraph's rewrite. Always present. */
   rewrite: Rewrite;
-  extras: { changeNotes: { what: string; why: string }[]; placeholdersAdded: string[]; fixSources: FixSourceInfo[]; warnings: string[] };
+  extras: {
+    changeNotes: { what: string; why: string }[];
+    placeholdersAdded: string[];
+    /** Other weak paragraphs, rewritten on a best-effort basis: a failure here never fails the coach. */
+    moreRewrites: MoreRewrite[];
+    fixSources: FixSourceInfo[];
+    warnings: string[];
+  };
   metrics: CoachMetrics;
 }
 
@@ -177,6 +196,10 @@ export function planRewrite(essay: TranscribedEssay, analysis: BlendedAnalysis, 
     fallbackNote = measured ? "No paragraph-level problem was measured; the least relevant paragraph was chosen." : "No paragraph-level problem was measured; the first body paragraph was chosen.";
     warnings.push(fallbackNote);
   }
+  return { warnings, plan: planFor(essay, analysis, paragraphId, benchmark, fallbackNote) };
+}
+
+function planFor(essay: TranscribedEssay, analysis: BlendedAnalysis, paragraphId: string, benchmark?: BenchmarkResult, fallbackNote?: string): RewritePlan {
   const index = essay.paragraphs.findIndex((p) => p.id === paragraphId);
   if (index < 0) throw new CoachError(500, `The paragraph chosen for rewriting (${paragraphId}) is not in the essay.`, "invalid");
   const para = essay.paragraphs[index];
@@ -185,23 +208,35 @@ export function planRewrite(essay: TranscribedEssay, analysis: BlendedAnalysis, 
   const issues = analysis.rankedIssues.filter((i) => i.paragraphId === para.id);
   const role = analysis.reportParts.paragraphs[index]?.role ?? "claim";
   return {
-    warnings,
-    plan: {
-      paragraphId: para.id,
-      paragraphNumber: index + 1,
-      text: para.text,
-      role,
-      kind: para.kind,
-      thesis: thesisLabel ? refs.find((r) => r.id === thesisLabel.sentenceId)?.text : undefined,
-      before: index > 0 ? refs.filter((r) => r.paragraphId === essay.paragraphs[index - 1].id).at(-1)?.text : undefined,
-      after: index < essay.paragraphs.length - 1 ? refs.find((r) => r.paragraphId === essay.paragraphs[index + 1].id)?.text : undefined,
-      problems: issues.length
-        ? issues.map((i) => ({ type: i.type, description: ISSUE_DESCRIPTION[i.type], sentences: i.sentences.slice(0, COACH.MAX_TARGET_SENTENCES) }))
-        : [{ type: "general", description: "No specific problem was measured in this paragraph; tighten it and make its point more specific without changing its meaning.", sentences: [] }],
-      inspiration: inspirationFor(role, benchmark),
-      fallbackNote,
-    },
+    paragraphId: para.id,
+    paragraphNumber: index + 1,
+    text: para.text,
+    role,
+    kind: para.kind,
+    thesis: thesisLabel ? refs.find((r) => r.id === thesisLabel.sentenceId)?.text : undefined,
+    before: index > 0 ? refs.filter((r) => r.paragraphId === essay.paragraphs[index - 1].id).at(-1)?.text : undefined,
+    after: index < essay.paragraphs.length - 1 ? refs.find((r) => r.paragraphId === essay.paragraphs[index + 1].id)?.text : undefined,
+    problems: issues.length
+      ? issues.map((i) => ({ type: i.type, description: ISSUE_DESCRIPTION[i.type], sentences: i.sentences.slice(0, COACH.MAX_TARGET_SENTENCES) }))
+      : [{ type: "general", description: "No specific problem was measured in this paragraph; tighten it and make its point more specific without changing its meaning.", sentences: [] }],
+    inspiration: inspirationFor(role, benchmark),
+    fallbackNote,
   };
+}
+
+/**
+ * The other weak paragraphs to rewrite besides `primaryId`. CODE decides, from measured problems only: a paragraph is
+ * chosen when the measurements found at least one problem in it, in order of total impact, long enough to rewrite.
+ * A paragraph with nothing measured is never rewritten just to fill the quota.
+ */
+export function planExtraRewrites(essay: TranscribedEssay, analysis: BlendedAnalysis, primaryId: string, benchmark?: BenchmarkResult, max: number = COACH.MAX_REWRITES - 1): RewritePlan[] {
+  const impact = new Map<string, number>();
+  for (const i of analysis.rankedIssues) if (i.paragraphId) impact.set(i.paragraphId, (impact.get(i.paragraphId) ?? 0) + i.impact);
+  return essay.paragraphs
+    .filter((p) => p.id !== primaryId && (impact.get(p.id) ?? 0) > 0 && countTextWords(p.text) >= COACH.MIN_REWRITE_WORDS)
+    .sort((a, b) => (impact.get(b.id) ?? 0) - (impact.get(a.id) ?? 0) || essay.paragraphs.indexOf(a) - essay.paragraphs.indexOf(b))
+    .slice(0, Math.max(0, max))
+    .map((p) => planFor(essay, analysis, p.id, benchmark));
 }
 
 /* ---------- main ---------- */
@@ -231,7 +266,8 @@ export async function coachEssay(essay: TranscribedEssay, topic: string, analysi
     return r.value ?? [];
   };
 
-  const doRewrite = async () => {
+  /** Rewrites one paragraph and applies every check. `tag` names the paragraph in warnings. Throws CoachError if unusable. */
+  const rewriteOne = async (plan: RewritePlan, tag: string) => {
     const original = plan.text;
     const r = await runCall(ctx, "rewrite", REWRITE_SYSTEM, rewriteResponseSchema, (p) => buildRewritePrompt(topic, plan, p), (raw) => {
       const parsed = rewriteOutputSchema.safeParse(raw);
@@ -248,18 +284,24 @@ export async function coachEssay(essay: TranscribedEssay, topic: string, analysi
     if (check.guard.numbers.length || check.guard.names.length) {
       const n = neutralise(improved, original);
       improved = n.text;
-      warnings.push(`The model paragraph contained ${n.replaced} figure(s) or name(s) that were not in your paragraph; each was replaced with a bracketed slot.`);
+      warnings.push(`${tag} contained ${n.replaced} figure(s) or name(s) that were not in your paragraph; each was replaced with a bracketed slot.`);
     }
     check = checkRewrite(improved, original);
     if (check.guard.slots.length > COACH.MAX_SLOTS) {
       const c = capSlots(improved, original);
       improved = c.text;
-      warnings.push(`The model paragraph had more than ${COACH.MAX_SLOTS} slots; ${c.dropped} extra slot(s) were removed.`);
+      warnings.push(`${tag} had more than ${COACH.MAX_SLOTS} slots; ${c.dropped} extra slot(s) were removed.`);
     }
     return { improved, notes: cleanNotes(r.value.changeNotes) };
   };
 
-  const [fixesRes, rewriteRes] = await Promise.allSettled([doFixes(), doRewrite()]);
+  // The extra paragraphs run at the same time as the fixes and the main rewrite, so they add no waiting time.
+  const extraPlans = planExtraRewrites(essay, analysis, plan.paragraphId, opts.benchmark, (opts.maxRewrites ?? COACH.MAX_REWRITES) - 1);
+  const [fixesRes, rewriteRes, ...extraRes] = await Promise.allSettled([
+    doFixes(),
+    rewriteOne(plan, "The model paragraph"),
+    ...extraPlans.map((p) => rewriteOne(p, `The model version of paragraph ${p.paragraphNumber}`)),
+  ]);
 
   if (fixesRes.status === "rejected" && fixesRes.reason instanceof CoachError && fixesRes.reason.kind === "no-key") throw fixesRes.reason;
   if (rewriteRes.status === "rejected") {
@@ -277,19 +319,37 @@ export async function coachEssay(essay: TranscribedEssay, topic: string, analysi
   const fixes = assembled.fixes;
 
   const original = plan.text;
-  const { improved, notes } = rewriteRes.value;
+  const { improved, notes } = rewriteRes.value as { improved: string; notes: { what: string; why: string }[] };
   const diff = wordDiff(original, improved);
   const rewrite: Rewrite = { paragraphId: plan.paragraphId, original, improved, removed: diff.removed, added: diff.added };
   const placeholders = findSlots(improved, original);
 
   validateCoach({ fixes, rewrite }, paragraphs);
 
+  const moreRewrites: MoreRewrite[] = [];
+  extraRes.forEach((res, i) => {
+    const p = extraPlans[i];
+    if (res.status === "rejected") {
+      if (res.reason instanceof CoachError && res.reason.kind === "no-key") throw res.reason;
+      warnings.push(`Paragraph ${p.paragraphNumber} could not be rewritten this time, so only the other paragraphs have a model version.`);
+      return;
+    }
+    const v = res.value as { improved: string; notes: { what: string; why: string }[] };
+    if (v.improved.trim() === p.text.trim()) return; // nothing changed: do not show an empty before/after
+    const d = wordDiff(p.text, v.improved);
+    moreRewrites.push({
+      rewrite: { paragraphId: p.paragraphId, original: p.text, improved: v.improved, removed: d.removed, added: d.added },
+      changeNotes: v.notes,
+      placeholders: findSlots(v.improved, p.text),
+    });
+  });
+
   const src = assembled.sources;
   const proposed = verified.filter((v) => v.quoteProposed);
   return {
     fixes,
     rewrite,
-    extras: { changeNotes: notes, placeholdersAdded: placeholders, fixSources: src, warnings },
+    extras: { changeNotes: notes, placeholdersAdded: placeholders, moreRewrites, fixSources: src, warnings },
     metrics: {
       issuesSelected: selection.issuesSelected,
       fixesFromIssues: src.filter((s) => s.source === "issue").length,
@@ -300,7 +360,8 @@ export async function coachEssay(essay: TranscribedEssay, topic: string, analysi
       quotesVerified: proposed.filter((v) => v.quote).length,
       quotesRejected: proposed.filter((v) => !v.quote).length,
       numberGuardTriggers: m.numberGuardTriggers,
-      slotsInserted: placeholders.length,
+      slotsInserted: placeholders.length + moreRewrites.reduce((n, m) => n + m.placeholders.length, 0),
+      extraRewrites: moreRewrites.length,
       rewriteLengthRatio: Math.round((countTextWords(improved) / Math.max(countTextWords(original), 1)) * 100) / 100,
       retries: m.retries,
       totalMs: Date.now() - started,

@@ -88,6 +88,10 @@ export const COACH = {
   MAX_TARGET_SENTENCES: 3,
   MAX_BENCHMARK_INSPIRATION: 3,
   FIX_COUNT: 3,
+  /** Paragraphs rewritten as teaching models, the weakest first. Each is one extra model call (run in parallel). */
+  MAX_REWRITES: 3,
+  /** A paragraph shorter than this is not rewritten: there is too little to improve and the length check would be meaningless. */
+  MIN_REWRITE_WORDS: 20,
 } as const;
 
 /** Limits and soft timeouts for the end-to-end pipeline behind /api/analyze. */

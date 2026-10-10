@@ -85,7 +85,8 @@ export function Structure({ report }: { report: EssayReport }) {
                   See in essay
                 </a>
               </div>
-              <p className="mt-1.5 text-[14px] leading-snug text-v-text-secondary">{p.summary}</p>
+              {/* When nothing was measured beyond the role, the summary is just the role again: skip the repeat. */}
+              {p.summary.trim().toLowerCase() !== ROLE_LABEL[p.role].toLowerCase() && <p className="mt-1.5 text-[14px] leading-snug text-v-text-secondary">{p.summary}</p>}
             </div>
           </li>
         ))}
@@ -219,15 +220,27 @@ function renderImproved(text: string, original: string, added: string[] | undefi
   return out;
 }
 
-export function BeforeAfter({ report, rewriteExtras }: { report: EssayReport; rewriteExtras?: ReportExtras["rewriteExtras"] }) {
+/**
+ * One before/after pair. By default it shows the report's main rewrite (the weakest paragraph); pass `rewrite` and
+ * `notes` for a further weak paragraph. `caption` says why this paragraph was chosen, and the practice note under it is
+ * shown only on the last pair (`note`).
+ */
+export function BeforeAfter({ report, rewriteExtras, rewrite, notes: notesProp, caption, note = true }: {
+  report: EssayReport;
+  rewriteExtras?: ReportExtras["rewriteExtras"];
+  rewrite?: EssayReport["rewrite"];
+  notes?: { what: string; why: string }[];
+  caption?: string;
+  note?: boolean;
+}) {
   const [changes, setChanges] = useState(true);
-  const r = report.rewrite;
+  const r = rewrite ?? report.rewrite;
   const n = report.paragraphs.findIndex((p) => p.id === r.paragraphId) + 1;
-  const notes = rewriteExtras?.changeNotes ?? [];
+  const notes = notesProp ?? rewriteExtras?.changeNotes ?? [];
   return (
     <div>
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="text-[13.5px] text-v-text-secondary">Paragraph {n}, the weakest on-page paragraph.</p>
+        <p className="text-[13.5px] text-v-text-secondary">{caption ?? `Paragraph ${n}, the weakest on-page paragraph.`}</p>
         <button
           type="button"
           role="switch"
@@ -261,7 +274,7 @@ export function BeforeAfter({ report, rewriteExtras }: { report: EssayReport; re
           </ul>
         </div>
       )}
-      <p className="mt-3 text-[12.5px] text-v-text-muted">Model paragraph for practice. In the exam, write your own. It is written by AI and is not a replacement for your own words.</p>
+      {note && <p className="mt-3 text-[12.5px] text-v-text-muted">Model paragraphs for practice. In the exam, write your own. They are written by AI and are not a replacement for your own words.</p>}
     </div>
   );
 }

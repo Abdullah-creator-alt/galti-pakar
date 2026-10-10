@@ -76,6 +76,17 @@ export interface RewriteExtras {
   placeholders: string[];
 }
 
+/** A further weak paragraph with its own model version. The main one stays in report.rewrite. */
+export interface MoreRewrite {
+  paragraphId: string;
+  original: string;
+  improved: string;
+  removed?: string[];
+  added?: string[];
+  changeNotes: { what: string; why: string }[];
+  placeholders: string[];
+}
+
 export interface BenchmarkInfo {
   status: "ok" | "partial" | "unavailable";
   themeLabel?: string;
@@ -147,6 +158,8 @@ export interface ReportExtras {
   verification?: VerificationInfo;
   transcription?: TranscriptionInfo;
   rewriteExtras?: RewriteExtras;
+  /** Model versions of other weak paragraphs, weakest first. */
+  moreRewrites?: MoreRewrite[];
   benchmark?: BenchmarkInfo;
   cssProfile?: CssProfileInfo;
   warnings?: string[];
@@ -252,6 +265,20 @@ const rewriteExtras = z.object({
   placeholders: lenientArray(str, 10).catch([]),
 });
 
+const moreRewrite = z
+  .object({
+    paragraphId: z.string().min(1),
+    original: str,
+    improved: str,
+    removed: z.array(str).optional().catch(undefined),
+    added: z.array(str).optional().catch(undefined),
+    changeNotes: lenientArray(z.object({ what: str, why: str }), 6).catch([]),
+    placeholders: lenientArray(str, 10).catch([]),
+  })
+  // The same rule as the report's rewrite: highlighted phrases must really be in the text, and there must be a change to show.
+  .refine((r) => r.original.length > 0 && r.improved.length > 0 && r.original.trim() !== r.improved.trim(), { message: "nothing to compare" })
+  .refine((r) => (r.removed ?? []).every((x) => r.original.includes(x)) && (r.added ?? []).every((x) => r.improved.includes(x)), { message: "phrase not in text" });
+
 const benchmark = z.object({
   status: z.enum(["ok", "partial", "unavailable"]),
   themeLabel: str.optional().catch(undefined),
@@ -305,6 +332,7 @@ const extrasObject = z.object({
   verification: verification.optional().catch(undefined),
   transcription: transcription.optional().catch(undefined),
   rewriteExtras: rewriteExtras.optional().catch(undefined),
+  moreRewrites: lenientArray(moreRewrite, 2).optional().catch(undefined),
   benchmark: benchmark.optional().catch(undefined),
   cssProfile: cssProfile.optional().catch(undefined),
   warnings: lenientArray(str, 20).optional().catch(undefined),

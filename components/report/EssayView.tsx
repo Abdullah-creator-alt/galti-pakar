@@ -281,7 +281,7 @@ function DetailPanel({
           <ol className="mt-2 space-y-2">
             {trace.steps.map((s, i) => (
               <li key={i} className="flex gap-2 text-[13px] leading-snug text-v-text-secondary">
-                <span className="mt-[1px] w-[46px] shrink-0 rounded-full border border-v-border-strong px-1.5 py-0.5 text-center font-data text-[9.5px] font-bold uppercase tracking-[0.08em] text-v-text-secondary">{STAGE_LABEL[s.stage]}</span>
+                <span className="mt-[1px] h-[20px] w-[68px] shrink-0 whitespace-nowrap rounded-full border border-v-border-strong px-2 text-center leading-[18px] font-data text-[9.5px] font-bold uppercase tracking-[0.08em] text-v-text-secondary">{STAGE_LABEL[s.stage]}</span>
                 <span>{s.text}</span>
               </li>
             ))}

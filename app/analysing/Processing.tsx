@@ -16,10 +16,11 @@ const STEPS = [
 ];
 
 /**
- * Elapsed time at which each step becomes the active one. They are an estimate for a job of about 15 to 25 seconds;
- * the last step stays active until the report actually arrives, so nothing is ever shown as done early.
+ * Elapsed time at which each step becomes the active one. An estimate, paced on a recorded live run (reading about
+ * 9 s, measuring until about 30 s, examiner and coach after that, 46 s in all); the page does not get live progress.
+ * The last step stays active until the report actually arrives, so nothing is ever shown as done early.
  */
-const STEP_STARTS_MS = [0, 5000, 10500, 16000];
+const STEP_STARTS_MS = [0, 9000, 18000, 30000];
 const stepAt = (ms: number) => STEP_STARTS_MS.reduce((acc, t, i) => (ms >= t ? i : acc), 0);
 const FAST_FORWARD_MS = 350;
 

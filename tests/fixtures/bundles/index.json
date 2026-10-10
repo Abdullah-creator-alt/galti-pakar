@@ -5,6 +5,16 @@
     "note": "All extras present (synthetic example data)"
   },
   {
+    "name": "one-rewrite",
+    "valid": true,
+    "note": "only the main rewrite, no further weak paragraphs"
+  },
+  {
+    "name": "bad-more-rewrite",
+    "valid": true,
+    "note": "further rewrites with a phrase outside the text and an unknown paragraph: the parser drops them"
+  },
+  {
     "name": "no-extras",
     "valid": true,
     "note": "Report only, no extras"

@@ -11,3 +11,8 @@ tests/assets/private/
 tests/screenshots/
 test-results/
 playwright-report/
+
+deck/preview/
+
+# PowerPoint lock files
+~$*

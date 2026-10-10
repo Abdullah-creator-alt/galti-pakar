@@ -73,6 +73,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Container className="flex h-[64px] items-center justify-between">
           <Logo />
           <nav className="flex items-center gap-1 sm:gap-3" aria-label="Main">
+            <Link href="/how-it-works" className="hidden min-h-[44px] items-center whitespace-nowrap px-3 text-[13px] font-semibold text-v-text-secondary hover:text-v-text sm:inline-flex">
+              How it works
+            </Link>
             <Link href="/history" className="inline-flex min-h-[44px] items-center whitespace-nowrap px-2 text-[13px] font-semibold text-v-text-secondary hover:text-v-text sm:px-3">
               My essays
             </Link>

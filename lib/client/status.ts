@@ -96,9 +96,23 @@ export interface DebugStage {
   ms: number;
   note?: string;
 }
+/** Gemini calls and tokens one model used during the run, as the backend measured them. */
+export interface DebugUsage {
+  model: string;
+  calls: number;
+  failed: number;
+  inputTokens: number;
+  outputTokens: number;
+  thinkingTokens: number;
+  embeddedTexts: number;
+}
 export interface DebugInfo {
   stages: DebugStage[];
+  usage?: DebugUsage[];
+  totalMs?: number;
 }
+
+const USAGE_KEYS = ["calls", "failed", "inputTokens", "outputTokens", "thinkingTokens", "embeddedTexts"] as const;
 
 /** Defensive parse of the backend's optional debug field. Anything malformed is dropped. */
 export function parseDebug(input: unknown): DebugInfo | undefined {
@@ -108,5 +122,13 @@ export function parseDebug(input: unknown): DebugInfo | undefined {
     const o = s as Partial<DebugStage>;
     return typeof o?.name === "string" && typeof o.status === "string" && typeof o.ms === "number" ? [{ name: o.name.slice(0, 40), status: o.status.slice(0, 20), ms: o.ms, ...(typeof o.note === "string" ? { note: o.note.slice(0, 200) } : {}) }] : [];
   });
-  return ok.length ? { stages: ok } : undefined;
+  if (!ok.length) return undefined;
+  const meta = (input as { meta?: { usage?: unknown; totalMs?: unknown } }).meta;
+  const raw = meta?.usage && typeof meta.usage === "object" ? Object.entries(meta.usage as Record<string, unknown>) : [];
+  const usage = raw.flatMap(([model, v]) => {
+    const o = v as Record<string, unknown>;
+    if (!o || !USAGE_KEYS.every((k) => typeof o[k] === "number")) return [];
+    return [{ model: model.slice(0, 60), ...Object.fromEntries(USAGE_KEYS.map((k) => [k, o[k] as number])) } as DebugUsage];
+  });
+  return { stages: ok, ...(usage.length ? { usage } : {}), ...(typeof meta?.totalMs === "number" ? { totalMs: meta.totalMs } : {}) };
 }

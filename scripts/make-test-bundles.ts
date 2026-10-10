@@ -27,6 +27,13 @@ const entries: Entry[] = [];
 const add = (name: string, note: string, bundle: unknown, valid = true) => entries.push({ name, valid, note, bundle });
 
 add("full", "All extras present (synthetic example data)", base("fx-full"));
+{ const b = base("fx-one-rewrite"); delete b.extras!.moreRewrites; add("one-rewrite", "only the main rewrite, no further weak paragraphs", b); }
+{
+  const b = base("fx-bad-more-rewrite");
+  const m = b.extras!.moreRewrites![0];
+  b.extras!.moreRewrites = [{ ...m, added: ["a phrase that is not in the text"] }, { ...m, paragraphId: "p99" }] as NonNullable<typeof b.extras>["moreRewrites"];
+  add("bad-more-rewrite", "further rewrites with a phrase outside the text and an unknown paragraph: the parser drops them", b);
+}
 
 { const b = base("fx-no-extras"); delete b.extras; add("no-extras", "Report only, no extras", b); }
 { const b = base("fx-empty-trace"); b.extras = { ...b.extras, trace: {} }; add("empty-trace", "extras.trace is an empty object", b); }
