@@ -1,0 +1,287 @@
+"use client";
+
+import { Fragment, useState } from "react";
+import { BAND_LABEL, examinerAgreement, missingRoles } from "@/lib/derive";
+import type { Band, EssayReport, ParagraphRole, RubricKey } from "@/lib/types";
+import { BandPill, Button, StateIcon, ToneCard, bandStyle, stateText } from "@/components/ui";
+
+/* ---------- summary strip (joined tiles) ---------- */
+
+export function SummaryStrip({ report }: { report: EssayReport }) {
+  const a = examinerAgreement(report.examiners);
+  const tiles = [
+    { label: "Overall score", value: `${report.overallScore.toFixed(1)} / ${report.overallOutOf}`, state: "ok" as const, bandText: bandStyle[report.verdict].text },
+    { label: "Word count", value: String(report.wordCount), state: "ok" as const },
+    { label: "Paragraphs", value: String(report.paragraphs.length), state: "ok" as const },
+    { label: "Examiners agree", value: a.total ? `${a.modalCount} of ${a.total}` : "None", state: a.state },
+  ];
+  return (
+    <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[12px] border border-v-border bg-v-border sm:grid-cols-4">
+      {tiles.map((t) => (
+        <div key={t.label} className="bg-v-surface px-4 py-4 text-center">
+          <div className="mb-1.5 flex justify-center">
+            <StateIcon state={t.state} />
+          </div>
+          <p className={`font-data text-[22px] font-bold leading-none ${t.bandText ?? stateText[t.state]}`}>{t.value}</p>
+          <p className="mt-1.5 font-data text-[10.5px] font-semibold uppercase tracking-[0.1em] text-v-text-muted">{t.label}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ---------- scorecard ---------- */
+
+export function Scorecard({ report }: { report: EssayReport }) {
+  return (
+    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+      {report.dimensions.map((d, i) => (
+        <li
+          key={d.key}
+          className={`rounded-[12px] border border-v-border bg-v-card p-4 ${i === report.dimensions.length - 1 ? "col-span-2 sm:col-span-1" : ""}`}
+        >
+          <p className="font-data text-[10.5px] font-semibold uppercase tracking-[0.1em] text-v-text-muted">{d.label}</p>
+          <p className="mt-2 font-data text-[28px] font-bold leading-none text-v-text">
+            {d.score.toFixed(1)}
+            <span className="ml-1 text-[12px] font-medium text-v-text-muted">/ {d.outOf}</span>
+          </p>
+          <div className="mt-3 h-1 rounded-full bg-v-border" role="img" aria-label={`${d.score} out of ${d.outOf}`}>
+            <div className={`h-1 rounded-full ${bandStyle[d.band].fill}`} style={{ width: `${(d.score / d.outOf) * 100}%` }} />
+          </div>
+          <p className={`mt-2 text-[12.5px] font-semibold ${bandStyle[d.band].text}`}>{BAND_LABEL[d.band]}</p>
+          {d.note && <p className="mt-1.5 text-[12px] leading-snug text-v-text-muted">{d.note}</p>}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/* ---------- structure ---------- */
+
+const ROLE_LABEL: Record<ParagraphRole, string> = {
+  position: "Position",
+  claim: "Claim",
+  evidence: "Evidence",
+  "counter-argument": "Counter-argument",
+  conclusion: "Conclusion",
+};
+
+export function Structure({ report }: { report: EssayReport }) {
+  const gaps = missingRoles(report.paragraphs);
+  return (
+    <div>
+      <ol className="relative space-y-3 pl-0">
+        <span className="absolute bottom-3 left-[15px] top-3 w-px bg-v-border" aria-hidden />
+        {report.paragraphs.map((p, i) => (
+          <li key={p.id} className="relative flex items-start gap-3">
+            <span className="relative z-10 w-8 shrink-0 bg-v-bg py-1 text-center font-data text-[11px] font-bold text-v-accent-text">P{i + 1}</span>
+            <div className="min-w-0 flex-1 rounded-[10px] border border-v-border bg-v-card px-4 py-3">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                <span className="rounded-full border border-v-border-strong px-2.5 py-0.5 font-data text-[10px] font-bold uppercase tracking-[0.12em] text-v-text-secondary">
+                  {ROLE_LABEL[p.role]}
+                </span>
+                <a href={`#${p.id}`} className="inline-flex min-h-[44px] items-center text-[13px] font-semibold text-v-accent-text underline underline-offset-4 sm:ml-auto sm:min-h-0">
+                  See in essay
+                </a>
+              </div>
+              <p className="mt-1.5 text-[14px] leading-snug text-v-text-secondary">{p.summary}</p>
+            </div>
+          </li>
+        ))}
+        {gaps.map((g) => (
+          <li key={g} className="relative flex items-start gap-3">
+            <span className="relative z-10 grid w-8 shrink-0 place-items-center bg-v-bg py-1">
+              <StateIcon state="partial" size={16} />
+            </span>
+            <div className="min-w-0 flex-1 rounded-[10px] border border-v-flag bg-v-flag-wash px-4 py-3">
+              <p className="text-[14px] font-semibold text-v-flag-text">No {ROLE_LABEL[g].toLowerCase()} found</p>
+              <p className="mt-0.5 text-[13px] text-v-flag-text">None of your paragraphs plays this role.</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+/* ---------- top 3 fixes ---------- */
+
+export function Fixes({ report }: { report: EssayReport }) {
+  return (
+    <div>
+      <ol className="grid gap-4 lg:grid-cols-3">
+        {[...report.fixes].sort((a, b) => a.rank - b.rank).map((f) => (
+          <li key={f.rank} className="rounded-[10px] border border-v-border bg-v-card px-4 py-3.5">
+            <p className="font-data text-[10px] font-bold tracking-[0.14em] text-v-accent-text">{String(f.rank).padStart(2, "0")}</p>
+            <p className="mt-1.5 text-[15px] font-bold leading-tight text-v-text">{f.title}</p>
+            <p className="mt-1.5 text-[13px] leading-snug text-v-text-secondary">{f.body}</p>
+            {f.paragraphId && (
+              <a href={`#${f.paragraphId}`} className="mt-2 inline-flex min-h-[44px] items-center text-[13px] font-semibold text-v-accent-text underline underline-offset-4">
+                See P{report.paragraphs.findIndex((p) => p.id === f.paragraphId) + 1}
+              </a>
+            )}
+          </li>
+        ))}
+      </ol>
+      <p className="mt-3 text-[12.5px] text-v-text-muted">Ranked by estimated effect on your score.</p>
+    </div>
+  );
+}
+
+/* ---------- before / after ---------- */
+
+function marked(text: string, phrases: string[] | undefined, cls: string, on: boolean) {
+  if (!on || !phrases?.length) return text;
+  const hits = phrases
+    .map((ph) => ({ ph, at: text.indexOf(ph) }))
+    .filter((h) => h.at >= 0)
+    .sort((a, b) => a.at - b.at);
+  const out: React.ReactNode[] = [];
+  let cur = 0;
+  hits.forEach((h, i) => {
+    if (h.at < cur) return;
+    if (h.at > cur) out.push(<Fragment key={`a${i}`}>{text.slice(cur, h.at)}</Fragment>);
+    out.push(<span key={`m${i}`} className={cls}>{h.ph}</span>);
+    cur = h.at + h.ph.length;
+  });
+  out.push(<Fragment key="z">{text.slice(cur)}</Fragment>);
+  return out;
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [state, setState] = useState<"idle" | "done" | "failed">("idle");
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setState("done");
+    } catch {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        ta.remove();
+        setState(ok ? "done" : "failed");
+      } catch {
+        setState("failed");
+      }
+    }
+    setTimeout(() => setState("idle"), 2000);
+  }
+  return (
+    <button type="button" onClick={copy} className="no-print mt-3 inline-flex min-h-[44px] items-center text-[13px] font-semibold text-v-accent-text underline underline-offset-4" aria-live="polite">
+      {state === "done" ? "Copied" : state === "failed" ? "Copy failed. Select the text instead." : "Copy"}
+    </button>
+  );
+}
+
+export function BeforeAfter({ report }: { report: EssayReport }) {
+  const [changes, setChanges] = useState(true);
+  const r = report.rewrite;
+  const n = report.paragraphs.findIndex((p) => p.id === r.paragraphId) + 1;
+  return (
+    <div>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="text-[13.5px] text-v-text-secondary">Paragraph {n}, the weakest on-page paragraph.</p>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={changes}
+          onClick={() => setChanges((c) => !c)}
+          className="no-print inline-flex min-h-[44px] items-center gap-2 rounded-full border border-v-border-strong px-4 text-[13px] font-semibold text-v-text"
+        >
+          <span className={`h-3 w-3 rounded-full ${changes ? "bg-v-accent-strong" : "border border-v-text-muted"}`} aria-hidden />
+          Show changes
+        </button>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <ToneCard title="Your paragraph" tone="flag">
+          <p className="text-[16px] leading-[1.75] text-v-text">{marked(r.original, r.removed, "diff-del", changes)}</p>
+          <CopyButton text={r.original} />
+        </ToneCard>
+        <ToneCard title="A stronger version (machine-written)" tone="good">
+          <p className="text-[16px] leading-[1.75] text-v-text">{marked(r.improved, r.added, "diff-add", changes)}</p>
+          <CopyButton text={r.improved} />
+        </ToneCard>
+      </div>
+      <p className="mt-3 text-[12.5px] text-v-text-muted">This rewrite is a model example, written by AI. It is not a replacement for your own words.</p>
+    </div>
+  );
+}
+
+/* ---------- examiner panel ---------- */
+
+const DIM_LABEL: Record<RubricKey, string> = {
+  thesis: "Thesis",
+  outline: "Outline",
+  argument: "Argument",
+  evidence: "Evidence",
+  "counter-argument": "Counter-argument",
+  coherence: "Coherence",
+  language: "Language",
+};
+
+export function ExaminerPanel({ report }: { report: EssayReport }) {
+  const a = examinerAgreement(report.examiners);
+  const keys = Object.keys(DIM_LABEL) as RubricKey[];
+  const names = a.differing.map((k) => DIM_LABEL[k]);
+  return (
+    <div>
+      {a.total === 1 ? (
+        <p className="mb-4 flex items-center gap-2 text-[15px] font-semibold text-v-text">
+          <StateIcon state="absent" /> Scored by one examiner
+        </p>
+      ) : (
+        <p className="mb-4 flex items-start gap-2 text-[15px] font-semibold text-v-text">
+          <span className="mt-1 shrink-0"><StateIcon state={a.state} /></span>
+          {a.agree ? "Examiners agree" : `Examiners differ on: ${names.join(", ")}`}
+        </p>
+      )}
+      <ul className="space-y-2">
+        {report.examiners.map((e) => (
+          <li key={e.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-[10px] border border-v-border bg-v-card px-4 py-3">
+            <div className="min-w-[130px]">
+              <p className="text-[14px] font-bold text-v-text">{e.label}</p>
+              <p className="font-data text-[10px] uppercase tracking-[0.12em] text-v-text-muted">AI examiner</p>
+            </div>
+            <BandPill band={e.band} small />
+            <span className="font-data text-[16px] font-bold text-v-text">{e.overall.toFixed(1)}<span className="text-[11px] font-medium text-v-text-muted"> / {report.overallOutOf}</span></span>
+            <ul className="ml-auto flex items-center gap-1.5" aria-label="Band per dimension">
+              {keys.map((k) => {
+                const differs = a.differing.includes(k);
+                return (
+                  <li
+                    key={k}
+                    title={`${DIM_LABEL[k]}: ${BAND_LABEL[e.dimensions[k]]}`}
+                    aria-label={`${DIM_LABEL[k]}: ${BAND_LABEL[e.dimensions[k]]}${differs ? ", examiners differ" : ""}`}
+                    className={`h-3 w-3 rounded-full ${bandStyle[e.dimensions[k]].dot} ${differs ? "ring-2 ring-v-flag ring-offset-2 ring-offset-v-card" : ""}`}
+                  />
+                );
+              })}
+            </ul>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-[12.5px] text-v-text-muted">
+        Dots run in rubric order: {keys.map((k) => DIM_LABEL[k]).join(", ")}. An amber ring marks a dimension where examiners differ. Disagreement is information, not an error.
+      </p>
+    </div>
+  );
+}
+
+export function verdictSentence(report: EssayReport): { range: string; text: string } {
+  const a = examinerAgreement(report.examiners);
+  const [lo, hi] = a.range;
+  const range = lo === hi ? BAND_LABEL[lo] : `${BAND_LABEL[lo]} to ${BAND_LABEL[hi]}`;
+  const counts: Partial<Record<Band, number>> = {};
+  report.examiners.forEach((e) => (counts[e.band] = (counts[e.band] ?? 0) + 1));
+  const top = (Object.entries(counts) as [Band, number][]).sort((x, y) => y[1] - x[1])[0];
+  const text =
+    a.total === 1
+      ? `One examiner placed this in the ${BAND_LABEL[top[0]]} band.`
+      : `${top[1]} of ${a.total} examiners placed this in the ${BAND_LABEL[top[0]]} band.`;
+  return { range, text };
+}
