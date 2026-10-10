@@ -9,6 +9,8 @@ import type { EssayReport } from "../types.ts";
 import { spanKey, parseExtras, type ClaimLink as ExtraLink, type PassageRef, type ReportExtras, type SpanTrace, type TraceStage, type TraceStep } from "../types.extras.ts";
 import type { BenchmarkResult } from "./benchmark.types.ts";
 import type { BlendedAnalysis, SentenceRef, TraceEntry } from "./blend.types.ts";
+import { buildCssProfileInfo } from "../profiles/cssInsights.ts";
+import type { StructureAnalysis } from "../structure/index.ts";
 import { essayWordCount } from "./adapters.ts";
 import { reportSchema } from "./schema.ts";
 import type { TranscribedEssay } from "./transcribe.types.ts";
@@ -27,6 +29,8 @@ export interface AssembleInput {
   rewrite: Rewrite;
   rewriteExtras?: { changeNotes: { what: string; why: string }[]; placeholders: string[] };
   benchmark?: BenchmarkResult;
+  /** The structure analysis, with CSS profile labels when a profile was applied. Used only for the CSS section. */
+  structure?: StructureAnalysis;
   /** Plain-language notes about stages that were degraded or skipped. */
   warnings: string[];
 }
@@ -192,6 +196,10 @@ function buildExtras(i: AssembleInput, report: EssayReport): { extras: ReportExt
   // Warnings: stage notes first, then each step's own notes. Plain language, deduplicated.
   const warnings = [...new Set([...i.warnings, ...blend.warnings.map(plainWarning), ...droppedNotes].map((w) => cap(w)))].slice(0, MAX_WARNINGS);
 
+  // The CSS section needs the structure analysis; without it, or without profile labels, it is simply left out.
+  const driftMeasured = !warnings.includes(WARN.relevance) && !warnings.includes(WARN.analysis);
+  const cssProfile = i.structure ? buildCssProfileInfo({ structure: i.structure, essay, report, driftMeasured }) : undefined;
+
   const extras: ReportExtras = {
     ...(Object.keys(trace).length ? { trace: trace as ReportExtras["trace"] } : {}),
     ...(claimMap ? { claimMap } : {}),
@@ -212,6 +220,7 @@ function buildExtras(i: AssembleInput, report: EssayReport): { extras: ReportExt
     },
     ...(i.rewriteExtras ? { rewriteExtras: { changeNotes: i.rewriteExtras.changeNotes, placeholders: i.rewriteExtras.placeholders } } : {}),
     ...(benchmark ? { benchmark } : {}),
+    ...(cssProfile ? { cssProfile } : {}),
     ...(warnings.length ? { warnings } : {}),
   };
   return { extras, warnings };

@@ -257,12 +257,15 @@ test("the measuring stage hands the CSS profile to the structure analysis by def
   assert.equal(seen[2], custom);
 });
 
-test("the whole pipeline returns the same report and extras with or without the profile", async () => {
+test("the whole pipeline returns the same report with or without the profile; the only difference in extras is the CSS section", async () => {
   const withProfile = await runPipeline({ images: IMAGES, topic: "Education and national progress" }, { deps: happyDeps() });
   const without = await runPipeline(
     { images: IMAGES, topic: "Education and national progress" },
     { deps: happyDeps({ structure: (input) => analyzeEssayStructure({ ...input, profile: undefined }, { complete: mockComplete(ESSAY_A_SPECS) }) }) },
   );
   assert.deepEqual(withProfile.report, without.report);
-  assert.deepEqual(withProfile.extras, without.extras);
+  const { cssProfile, ...rest } = withProfile.extras;
+  assert.ok(cssProfile, "the CSS section is built when the profile ran");
+  assert.deepEqual(rest, without.extras);
+  assert.equal(without.extras.cssProfile, undefined, "no profile, no CSS section");
 });

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DriftChart } from "@/components/report/DriftChart";
 import { ArgumentMap, argumentRowCount } from "@/components/report/ArgumentMap";
+import { CssSection } from "@/components/report/CssSection";
 import { EssayView } from "@/components/report/EssayView";
 import { BenchmarkCard, ConflictsList, DegradedBanner, DriftUnmeasured, ExaminerUnavailable, NoModelParagraph, NotSavedNote, StagesPanel, TranscriptionBanner, VerificationStrip, WarningsNote, benchmarkVisible } from "@/components/report/Extras";
 import { BeforeAfter, ExaminerPanel, Fixes, Scorecard, Structure, SummaryStrip, verdictSentence } from "@/components/report/Sections";
@@ -110,6 +111,13 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
 
         <SectionRule title="Structure" />
         <Reveal><Structure report={report} /></Reveal>
+
+        {extras?.cssProfile && (
+          <>
+            <SectionRule title="For the CSS English Essay" id="css" />
+            <Reveal><CssSection info={extras.cssProfile} /></Reveal>
+          </>
+        )}
 
         <SectionRule title="Top 3 fixes" />
         <Reveal><Fixes report={report} /></Reveal>

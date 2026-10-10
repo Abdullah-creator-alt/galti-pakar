@@ -320,6 +320,7 @@ async function execute(input: PipelineInput, opts: PipelineOptions, stages: Stag
       rewrite,
       ...(coachExtras ? { rewriteExtras: { changeNotes: coachExtras.changeNotes, placeholders: coachExtras.placeholdersAdded } } : {}),
       ...(benchmarkResult ? { benchmark: benchmarkResult } : {}),
+      ...(m?.structure.status === "ok" && m.structure.value ? { structure: m.structure.value } : {}),
       warnings,
     });
     record("assemble", t7, "ok");

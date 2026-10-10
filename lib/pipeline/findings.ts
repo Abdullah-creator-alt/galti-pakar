@@ -59,6 +59,17 @@ const LABEL_FOR_ROLE: Partial<Record<ArgumentRole, StructureLabel>> = {
   conclusion: "Conclusion",
 };
 
+/**
+ * Maps the structure analysis' paragraph ids to the transcript's. Paragraph i is matched to paragraph i, and only if the
+ * texts are equal ignoring whitespace; otherwise null, so nothing is ever attached to the wrong paragraph.
+ */
+export function alignStructureParagraphs(analysis: StructureAnalysis, essay: Pick<TranscribedEssay, "paragraphs">): Map<string, string> | null {
+  const theirs = analysis.paragraphs;
+  const ours = essay.paragraphs;
+  const aligned = theirs.length === ours.length && theirs.every((p, i) => collapse(p.text) === collapse(ours[i].text));
+  return aligned ? new Map(theirs.map((p, i) => [p.id, ours[i].id])) : null;
+}
+
 export interface StructureFindings {
   findings: Pick<MeasuredFindings, "structure" | "links">;
   warnings: string[];
@@ -72,12 +83,8 @@ export interface StructureFindings {
  * relationship and not an embedding similarity.
  */
 export function findingsFromStructure(analysis: StructureAnalysis, essay: Pick<TranscribedEssay, "paragraphs">): StructureFindings {
-  const theirs = analysis.paragraphs;
-  const ours = essay.paragraphs;
-  const aligned = theirs.length === ours.length && theirs.every((p, i) => collapse(p.text) === collapse(ours[i].text));
-  if (!aligned) return { findings: {}, warnings: ["Structure paragraphs did not line up with the transcript; structure findings were not used."] };
-
-  const idFor = new Map(theirs.map((p, i) => [p.id, ours[i].id]));
+  const idFor = alignStructureParagraphs(analysis, essay);
+  if (!idFor) return { findings: {}, warnings: ["Structure paragraphs did not line up with the transcript; structure findings were not used."] };
   const confident = analysis.argumentElements.filter((e) => e.modelConfidence >= LOW_MODEL_CONFIDENCE);
 
   const seen = new Set<string>();

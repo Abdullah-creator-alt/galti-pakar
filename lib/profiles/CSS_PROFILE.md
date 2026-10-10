@@ -90,6 +90,32 @@ the same on the server (the profile is never accepted from a request). Disable i
 With no profile, or an invalid or unverified one, the generic analysis runs unchanged and a warning is recorded.
 The labels are on the structure analysis result; the examiner's input and the report are unchanged (tested).
 
+## In the report: "For the CSS English Essay"
+
+`lib/profiles/cssInsights.ts` builds the section's data (the `cssProfile` extra) from the structure analysis and its
+criterion labels; `components/report/CssSection.tsx` shows it, after the Structure section. The report and the
+examiner's input are unchanged. If the profile did not run, the section is simply absent.
+
+What it shows:
+
+- **What stands out:** short readings tied to evidence the engine produced. Where to re-read (the paragraph holding
+  most paragraph-level signals, shown only when there are at least two); how many claims have no clear supporting
+  passage; whether a central position and a concluding passage were identified; how many opposing views were raised
+  and how many have an identified response; and a possible relevance concern that combines the thesis-tie finding with
+  the separate topic-drift measurement. Each says what it cannot show.
+- **Criteria checked:** one card per criterion with its provenance badge ("FPSC syllabus" or "Inferred best
+  practice"), a status, the engine's own observations with links to the paragraphs, and a "What this cannot show"
+  note. Official criteria quote the syllabus with its page.
+- **Read this first:** the official wording, how many criteria are inferred, and the limits.
+
+Statuses: *Signals to check*, *Nothing flagged*, *Nothing to check* (for example no opposing view was raised),
+*Not assessed here* (no check covers it, or a precondition such as an identified thesis is missing). "Nothing
+flagged" is deliberately neutral and never green, because a missing signal does not mean a part is strong.
+
+The section never shows a mark, score, grade, rank or pass/fail, and tests enforce that in its wording. The built-in
+example report carries invented sample data for this section, built from the real registry and consistent with the
+example's own claim map.
+
 ## Changing it
 
 Edit `cssEssay.ts`, bump `CSS_ESSAY_PROFILE_VERSION`, set `introducedIn` on new criteria, keep ids stable, and

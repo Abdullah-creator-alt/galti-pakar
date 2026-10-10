@@ -97,6 +97,49 @@ export interface BenchmarkInfo {
   disclaimers: string[];
 }
 
+/**
+ * The "For the CSS English Essay" section. Built on the server from the structure analysis and its CSS profile labels.
+ * It describes structural signals only: no marks, weights, scores or grade, and no judgement of knowledge, language
+ * or overall quality. Every row says whether the analysis could look at that criterion at all.
+ */
+export type CssCriterionStatus = "signals" | "none_flagged" | "nothing_to_check" | "not_assessed";
+export interface CssObservation {
+  text: string;
+  paragraphIds: string[];
+}
+export interface CssCriterionRow {
+  id: string;
+  title: string;
+  /** official_* means the FPSC syllabus text supports it; anything else is inferred best practice. */
+  origin: "official_requirement" | "official_guidance" | "inferred_best_practice" | "other";
+  assessability: "machine_checkable" | "partially_assessable" | "requires_judgment";
+  status: CssCriterionStatus;
+  /** What this criterion's signal cannot show. */
+  limitations: string;
+  /** Exact official wording; only on official criteria. */
+  sourceQuote?: string;
+  sourceLocator?: string;
+  /** Why the status is what it is, when that needs saying. */
+  note?: string;
+  observations: CssObservation[];
+}
+export type CssInsightKind = "attention" | "support" | "position" | "ending" | "opposing" | "relevance";
+export interface CssInsight {
+  id: string;
+  kind: CssInsightKind;
+  headline: string;
+  detail: string;
+  paragraphIds: string[];
+}
+export interface CssProfileInfo {
+  profileId: string;
+  profileVersion: string;
+  source: { title: string; url: string; locator: string; retrievedOn: string };
+  insights: CssInsight[];
+  criteria: CssCriterionRow[];
+  caveats: string[];
+}
+
 export interface ReportExtras {
   trace?: Record<SpanKey, SpanTrace>;
   claimMap?: ClaimMap;
@@ -105,6 +148,7 @@ export interface ReportExtras {
   transcription?: TranscriptionInfo;
   rewriteExtras?: RewriteExtras;
   benchmark?: BenchmarkInfo;
+  cssProfile?: CssProfileInfo;
   warnings?: string[];
 }
 
@@ -230,6 +274,30 @@ const benchmark = z.object({
   disclaimers: lenientArray(str, 10).catch([]),
 });
 
+const pids = lenientArray(z.string().min(1).max(20), 12).catch([]);
+const cssProfile = z.object({
+  profileId: str,
+  profileVersion: str,
+  source: z.object({ title: str, url: z.string().url().max(300), locator: str, retrievedOn: str }),
+  insights: lenientArray(z.object({ id: str, kind: z.enum(["attention", "support", "position", "ending", "opposing", "relevance"]), headline: str, detail: str, paragraphIds: pids }), 8).catch([]),
+  criteria: lenientArray(
+    z.object({
+      id: str,
+      title: str,
+      origin: z.enum(["official_requirement", "official_guidance", "inferred_best_practice", "other"]).catch("other"),
+      assessability: z.enum(["machine_checkable", "partially_assessable", "requires_judgment"]),
+      status: z.enum(["signals", "none_flagged", "nothing_to_check", "not_assessed"]),
+      limitations: str,
+      sourceQuote: str.optional().catch(undefined),
+      sourceLocator: str.optional().catch(undefined),
+      note: str.optional().catch(undefined),
+      observations: lenientArray(z.object({ text: str, paragraphIds: pids }), 8).catch([]),
+    }),
+    12,
+  ).catch([]),
+  caveats: lenientArray(str, 6).catch([]),
+});
+
 const extrasObject = z.object({
   trace: traceMap.optional().catch(undefined),
   claimMap: claimMap.optional().catch(undefined),
@@ -238,6 +306,7 @@ const extrasObject = z.object({
   transcription: transcription.optional().catch(undefined),
   rewriteExtras: rewriteExtras.optional().catch(undefined),
   benchmark: benchmark.optional().catch(undefined),
+  cssProfile: cssProfile.optional().catch(undefined),
   warnings: lenientArray(str, 20).optional().catch(undefined),
 });
 

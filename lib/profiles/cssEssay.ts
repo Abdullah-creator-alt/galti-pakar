@@ -13,7 +13,7 @@
  * English Essay paper text, and recording its SHA-256. A human should re-check it against the current FPSC
  * syllabus before relying on it.
  */
-import { analysisProfileSchema, type AnalysisProfile } from "../structure/index.ts";
+import { analysisProfileSchema, type AnalysisProfile } from "../structure/profile.ts";
 
 export const CSS_ESSAY_PROFILE_ID = "css-english-essay";
 export const CSS_ESSAY_PROFILE_VERSION = "1.0.0";

@@ -3,7 +3,8 @@
  * flagged isExample), written so that every offset points at real text in the mock report.
  */
 import { mockReport } from "./mock.ts";
-import type { AnalysisBundle, PassageRef, ReportExtras, SpanTrace } from "./types.extras.ts";
+import { CSS_ESSAY_PROFILE, FPSC_QUOTES, FPSC_SYLLABUS_DOC_ID } from "./profiles/cssEssay.ts";
+import type { AnalysisBundle, CssCriterionRow, CssProfileInfo, PassageRef, ReportExtras, SpanTrace } from "./types.extras.ts";
 import { spanKey } from "./types.extras.ts";
 import type { EssayReport } from "./types.ts";
 
@@ -86,7 +87,62 @@ const trace: Record<string, SpanTrace> = {
   },
 };
 
+/**
+ * Sample "For the CSS English Essay" data, consistent with the example report above (invented, like the rest of it):
+ * claims in P2 (supported), P7 (weakly supported) and P4 (no support found), an opposing view in P7 with no response,
+ * a thesis in P1, a conclusion in P8, and drift in P4 and P5. Titles, quotes and limits come from the real registry.
+ */
+const SIGNAL = {
+  orphan: "No supporting evidence or reasoning was identified for this claim. It may be supported implicitly or elsewhere.",
+  weak: "Candidate support exists but rests only on weak structural signals such as nearness, so the support is uncertain.",
+  unanswered: "An opposing view is raised but no response to it was identified.",
+  tie: "Wording, nearness and support links found no tie between this claim and the thesis (no embedding comparison ran). This does not show the claim is off-topic; a paraphrase or implicit link may be missed.",
+};
+const NONE = "The analysis flagged nothing here. That is not a judgement that this part is strong.";
+const sampleRows: Record<string, Pick<CssCriterionRow, "status" | "observations" | "note">> = {
+  "CSS-ESSAY-001": { status: "none_flagged", observations: [], note: NONE },
+  "CSS-ESSAY-002": { status: "not_assessed", observations: [], note: "No check in this tool covers this criterion." },
+  "CSS-ESSAY-003": { status: "signals", observations: [{ text: SIGNAL.tie, paragraphIds: ["p5"] }] },
+  "CSS-ESSAY-004": { status: "signals", observations: [{ text: SIGNAL.orphan, paragraphIds: ["p4"] }, { text: SIGNAL.weak, paragraphIds: ["p7"] }] },
+  "CSS-ESSAY-005": { status: "not_assessed", observations: [], note: "No check in this tool covers this criterion." },
+  "CSS-ESSAY-006": { status: "signals", observations: [{ text: SIGNAL.unanswered, paragraphIds: ["p7"] }] },
+  "CSS-ESSAY-007": { status: "none_flagged", observations: [], note: NONE },
+  "CSS-ESSAY-008": { status: "signals", observations: [{ text: SIGNAL.orphan, paragraphIds: ["p4"] }, { text: SIGNAL.weak, paragraphIds: ["p7"] }] },
+  "CSS-ESSAY-009": { status: "not_assessed", observations: [], note: "This tool does not assess language or style." },
+};
+const syllabus = CSS_ESSAY_PROFILE.provenance.documents.find((d) => d.id === FPSC_SYLLABUS_DOC_ID)!;
+const cssSample: CssProfileInfo = {
+  profileId: CSS_ESSAY_PROFILE.profileId,
+  profileVersion: CSS_ESSAY_PROFILE.version,
+  source: { title: syllabus.title, url: syllabus.url!, locator: CSS_ESSAY_PROFILE.criteria.find((c) => c.sourceLocator)!.sourceLocator!, retrievedOn: syllabus.retrievedOn! },
+  insights: [
+    { id: "attention", kind: "attention", headline: "Start by re-reading P7", detail: "This paragraph holds 2 of the 4 paragraph-level signals. Signals mark places to re-read; they are not errors.", paragraphIds: ["p7"] },
+    { id: "support", kind: "support", headline: "2 of 3 claims need a closer look for support", detail: "1 claim with no supporting passage identified and 1 claim with only weak signs of support. Support may be implicit or elsewhere in the essay, so check each marked claim before deciding anything.", paragraphIds: ["p4", "p7"] },
+    { id: "position", kind: "position", headline: "A central position was identified", detail: "It was found in P1. This shows a stated position exists, not that it is clear or well argued.", paragraphIds: ["p1"] },
+    { id: "ending", kind: "ending", headline: "A concluding passage was identified", detail: "It was found in P8. Whether it matches the position and arguments was not assessed.", paragraphIds: ["p8"] },
+    { id: "opposing", kind: "opposing", headline: "1 opposing view raised, 1 without an identified response", detail: "A response may be implicit or placed elsewhere. Whether each view needs a reply is for the examiner to decide.", paragraphIds: ["p7"] },
+    { id: "relevance", kind: "relevance", headline: "Possible relevance concern: 1 claim with no clear tie to the thesis; 2 paragraphs measured as drifting from the topic", detail: "The thesis-tie check relies mainly on shared wording, so a paraphrase can be missed. The drift measurement compares each paragraph with the topic and is not a verdict on relevance. Treat these as places to re-read, not as proof of irrelevance.", paragraphIds: ["p4", "p5"] },
+  ],
+  criteria: CSS_ESSAY_PROFILE.criteria.map((c) => ({
+    id: c.id,
+    title: c.title,
+    origin: c.origin === "official_requirement" || c.origin === "official_guidance" ? c.origin : "inferred_best_practice",
+    assessability: c.checkability,
+    limitations: c.limitations ?? "",
+    ...(c.sourceQuote ? { sourceQuote: c.sourceQuote } : {}),
+    ...(c.sourceLocator ? { sourceLocator: c.sourceLocator } : {}),
+    ...sampleRows[c.id],
+  })),
+  caveats: [
+    `The FPSC syllabus for English Essay (compulsory, 100 marks) says: “${FPSC_QUOTES.knowledge}” and “${FPSC_QUOTES.style}”`,
+    "7 of the 9 criteria below are inferred best practice, not FPSC rules. The syllabus does not mention a thesis, counterarguments, a conclusion or coherence, and it gives no criterion weights.",
+    "This section looks only at structure. It cannot judge knowledge, accuracy, language, style, logic or coherence.",
+    "A signal is a place to look, not an error, and no signal does not mean a part is strong. There are no marks here: the examiner makes the evaluation.",
+  ],
+};
+
 export const mockExtras: ReportExtras = {
+  cssProfile: cssSample,
   trace,
   claimMap: {
     links: [
