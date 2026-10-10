@@ -6,12 +6,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --experimental-strip-types --test lib/*.test.ts"
+    "test": "node --no-warnings --test \"lib/**/*.test.ts\"",
+    "check:gemini": "node --env-file-if-exists=.env.local scripts/check-gemini.ts",
+    "test:read": "node --env-file-if-exists=.env.local --no-warnings scripts/test-read.ts",
+    "build:data": "node --env-file-if-exists=.env.local --no-warnings scripts/build-data.ts",
+    "train:genericness": "node --no-warnings scripts/train-genericness.ts",
+    "eval:drift": "node --no-warnings scripts/eval-drift.ts",
+    "test:genericness": "node --env-file-if-exists=.env.local --no-warnings scripts/test-genericness.ts"
   },
   "dependencies": {
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "sharp": "^0.35.5",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",

@@ -1,0 +1,252 @@
+[
+  {
+    "id": "t01",
+    "theme": "governance",
+    "text": "Federalism and the devolution of power after the 18th Amendment"
+  },
+  {
+    "id": "t02",
+    "theme": "governance",
+    "text": "Corruption and the accountability crisis in Pakistan"
+  },
+  {
+    "id": "t03",
+    "theme": "governance",
+    "text": "Judicial activism and the separation of powers"
+  },
+  {
+    "id": "t04",
+    "theme": "governance",
+    "text": "Civil-military relations and democratic consolidation"
+  },
+  {
+    "id": "t05",
+    "theme": "governance",
+    "text": "Local government and grassroots democracy in Pakistan"
+  },
+  {
+    "id": "t06",
+    "theme": "governance",
+    "text": "Police reforms and the rule of law"
+  },
+  {
+    "id": "t07",
+    "theme": "economy",
+    "text": "Pakistan's debt burden and the path to economic sovereignty"
+  },
+  {
+    "id": "t08",
+    "theme": "economy",
+    "text": "Reforming the narrow tax base"
+  },
+  {
+    "id": "t09",
+    "theme": "economy",
+    "text": "The informal economy and documentation of trade"
+  },
+  {
+    "id": "t10",
+    "theme": "economy",
+    "text": "Energy crisis and circular debt in Pakistan"
+  },
+  {
+    "id": "t11",
+    "theme": "economy",
+    "text": "Special economic zones and CPEC as an engine of growth"
+  },
+  {
+    "id": "t12",
+    "theme": "economy",
+    "text": "Inflation and the cost of living for the middle class"
+  },
+  {
+    "id": "t13",
+    "theme": "climate",
+    "text": "Climate change and Pakistan's economic future"
+  },
+  {
+    "id": "t14",
+    "theme": "climate",
+    "text": "Water scarcity and food security in the Indus basin"
+  },
+  {
+    "id": "t15",
+    "theme": "climate",
+    "text": "Urban flooding and disaster preparedness"
+  },
+  {
+    "id": "t16",
+    "theme": "climate",
+    "text": "Deforestation and the case for a green Pakistan"
+  },
+  {
+    "id": "t17",
+    "theme": "climate",
+    "text": "Glacier melt and the future of the northern areas"
+  },
+  {
+    "id": "t18",
+    "theme": "education",
+    "text": "The crisis of out-of-school children in Pakistan"
+  },
+  {
+    "id": "t19",
+    "theme": "education",
+    "text": "Reforming the examination system and rote learning"
+  },
+  {
+    "id": "t20",
+    "theme": "education",
+    "text": "Higher education and the brain drain"
+  },
+  {
+    "id": "t21",
+    "theme": "education",
+    "text": "A single national curriculum: promise and pitfalls"
+  },
+  {
+    "id": "t22",
+    "theme": "education",
+    "text": "Technical and vocational training for youth employment"
+  },
+  {
+    "id": "t23",
+    "theme": "security",
+    "text": "Counter-terrorism and the National Action Plan"
+  },
+  {
+    "id": "t24",
+    "theme": "security",
+    "text": "The roots of religious extremism in South Asia"
+  },
+  {
+    "id": "t25",
+    "theme": "security",
+    "text": "Cyber security and national defence in the digital age"
+  },
+  {
+    "id": "t26",
+    "theme": "security",
+    "text": "Border management and the Afghan refugee question"
+  },
+  {
+    "id": "t27",
+    "theme": "security",
+    "text": "Radicalisation of youth and the role of madrassa reform"
+  },
+  {
+    "id": "t28",
+    "theme": "society",
+    "text": "Women's participation in the workforce in Pakistan"
+  },
+  {
+    "id": "t29",
+    "theme": "society",
+    "text": "Honour-based violence and the limits of legislation"
+  },
+  {
+    "id": "t30",
+    "theme": "society",
+    "text": "Minority rights and religious tolerance"
+  },
+  {
+    "id": "t31",
+    "theme": "society",
+    "text": "Population growth as a development challenge"
+  },
+  {
+    "id": "t32",
+    "theme": "society",
+    "text": "Child labour and poverty in urban Pakistan"
+  },
+  {
+    "id": "t33",
+    "theme": "society",
+    "text": "Urbanisation and the rise of katchi abadis"
+  },
+  {
+    "id": "t34",
+    "theme": "foreign",
+    "text": "Pakistan's foreign policy in a multipolar world"
+  },
+  {
+    "id": "t35",
+    "theme": "foreign",
+    "text": "The Kashmir dispute and prospects for peace"
+  },
+  {
+    "id": "t36",
+    "theme": "foreign",
+    "text": "Pakistan-China relations beyond CPEC"
+  },
+  {
+    "id": "t37",
+    "theme": "foreign",
+    "text": "Regional connectivity and the future of SAARC"
+  },
+  {
+    "id": "t38",
+    "theme": "foreign",
+    "text": "Pakistan and the Gulf: remittances and dependence"
+  },
+  {
+    "id": "t39",
+    "theme": "technology",
+    "text": "Artificial intelligence and the future of jobs in Pakistan"
+  },
+  {
+    "id": "t40",
+    "theme": "technology",
+    "text": "Digital Pakistan: e-governance and financial inclusion"
+  },
+  {
+    "id": "t41",
+    "theme": "technology",
+    "text": "Social media, disinformation and public opinion"
+  },
+  {
+    "id": "t42",
+    "theme": "technology",
+    "text": "Renewable energy transition and solar power in Pakistan"
+  },
+  {
+    "id": "t43",
+    "theme": "technology",
+    "text": "The IT export sector and the freelancing economy"
+  },
+  {
+    "id": "t44",
+    "theme": "pakistan",
+    "text": "The role of the media in a fragile democracy"
+  },
+  {
+    "id": "t45",
+    "theme": "pakistan",
+    "text": "Health care system reform and universal coverage"
+  },
+  {
+    "id": "t46",
+    "theme": "pakistan",
+    "text": "Agricultural reform and the plight of the small farmer"
+  },
+  {
+    "id": "t47",
+    "theme": "pakistan",
+    "text": "The language question and national integration"
+  },
+  {
+    "id": "t48",
+    "theme": "pakistan",
+    "text": "Sports, culture and Pakistan's soft power"
+  },
+  {
+    "id": "t49",
+    "theme": "pakistan",
+    "text": "Balochistan: grievances and the case for inclusion"
+  },
+  {
+    "id": "t50",
+    "theme": "pakistan",
+    "text": "Public sector enterprises and the burden of losses"
+  }
+]

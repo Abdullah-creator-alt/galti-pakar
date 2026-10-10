@@ -1,0 +1,30 @@
+{
+  "synthetic": true,
+  "n": 80,
+  "uiThreshold": {
+    "configured": 90,
+    "mockReport": 50,
+    "threshold": 90,
+    "accuracy": 0.975,
+    "offTopicCaught": 0.95,
+    "onTopicKept": 1
+  },
+  "recommended": {
+    "threshold": 96,
+    "accuracy": 1,
+    "offTopicCaught": 1,
+    "onTopicKept": 1
+  },
+  "auc": {
+    "percentileRelevance": 1,
+    "rawCosine": 1
+  },
+  "meanRelevance": {
+    "onTopic": 99,
+    "offTopic": 48.15
+  },
+  "meanRawCosine": {
+    "onTopic": 0.899266397337309,
+    "offTopic": 0.7609045059876066
+  }
+}
