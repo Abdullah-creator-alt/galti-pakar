@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AppShell } from "@/components/Shells";
 import { ButtonLink, Container, Eyebrow, LIMITATION_TEXT, LimitationNote } from "@/components/ui";
 
@@ -50,6 +51,9 @@ export default function Home() {
               <ButtonLink href="/new">Upload a CSS essay</ButtonLink>
               <ButtonLink href="/report/example" variant="secondary" arrow={false}>See an example report</ButtonLink>
             </div>
+            <p className="v-enter-fade mt-5 text-[14px] text-v-text-secondary" style={{ animationDelay: "220ms" }}>
+              <Link href="/how-it-works" className="inline-flex min-h-[44px] items-center font-semibold text-v-accent-text underline underline-offset-4">See where the AI is used and what the code checks</Link>
+            </p>
           </div>
           <SamplePage />
         </Container>
@@ -57,9 +61,9 @@ export default function Home() {
       <Container className="py-16">
         <ul className="grid gap-6 md:grid-cols-3">
           {[
-            ["Where exactly", "Every passage is marked strong, weak or off-topic, with the reason one tap away."],
-            ["Why", "Seven practice-rubric dimensions (thesis, outline, argument, evidence, counter-argument, coherence and language), scored by several AI examiner runs, with disagreement shown rather than hidden."],
-            ["What to fix", "Three ranked fixes and one model paragraph, so you know what to work on before your next CSS practice essay."],
+            ["Where exactly", "Passages are marked strong, weak or off-topic, with the reason and how it was found one tap away."],
+            ["Why", "Seven practice-rubric dimensions (thesis, outline, argument, evidence, counter-argument, coherence and language), scored by two separate AI examiner runs and checked against measurements, with disagreement shown rather than hidden."],
+            ["What to fix", "Three ranked fixes and a rewrite of each weak paragraph, so you know what to work on before your next CSS practice essay."],
           ].map(([t, b]) => (
             <li key={t} className="rounded-[18px] border border-v-border bg-v-card p-7" style={{ boxShadow: "var(--v-elev-2)" }}>
               <h2 className="text-[20px] font-bold leading-tight text-v-text">{t}</h2>

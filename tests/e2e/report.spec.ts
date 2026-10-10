@@ -139,3 +139,55 @@ test.describe("highlight interaction", () => {
     expect(small).toEqual([]);
   });
 });
+
+test.describe("how it works page", () => {
+  for (const [w, h] of [[390, 844], [1280, 800]]) {
+    test(`renders at ${w}px with no sideways scroll and links from home`, async ({ page, problems }) => {
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto("/");
+      await page.getByRole("link", { name: "See where the AI is used and what the code checks" }).click();
+      await page.waitForURL("**/how-it-works");
+      await expect(page.locator("h1")).toHaveText("Measure first, judge second, verify everything.");
+      await expect(page.getByText("What the AI does")).toHaveCount(6);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)).toBe(false);
+      await page.screenshot({ path: `tests/screenshots/how-it-works-${w}.png`, fullPage: true });
+      assertClean(problems);
+    });
+  }
+});
+
+test.describe("before and after for several weak paragraphs", () => {
+  const stronger = (page: Page) => page.getByText("A stronger version (machine-written)");
+
+  test("two weak paragraphs each get their own pair, with their own notes, and the practice note once", async ({ page, problems }) => {
+    await open(page, "full");
+    await expect(stronger(page)).toHaveCount(2);
+    await expect(page.getByText("Paragraph 5, the weakest on-page paragraph.")).toBeVisible();
+    await expect(page.getByText("Paragraph 4, where the checks also found problems.")).toBeVisible();
+    await expect(page.getByText("Tied the education point back to the essay's topic.")).toBeVisible();
+    await expect(page.getByText(/Model paragraphs for practice/)).toHaveCount(1);
+    assertClean(problems);
+  });
+
+  test("a report with only the main rewrite shows exactly one pair", async ({ page, problems }) => {
+    await open(page, "one-rewrite");
+    await expect(stronger(page)).toHaveCount(1);
+    await expect(page.getByText("where the checks also found problems")).toHaveCount(0);
+    await expect(page.getByText(/Model paragraphs for practice/)).toHaveCount(1);
+    assertClean(problems);
+  });
+
+  test("further rewrites that do not match the text or a paragraph are dropped, not shown broken", async ({ page, problems }) => {
+    await open(page, "bad-more-rewrite");
+    await expect(stronger(page)).toHaveCount(1);
+    assertClean(problems);
+  });
+
+  test("on a phone the pairs stack and nothing scrolls sideways", async ({ page, problems }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await open(page, "full");
+    await expect(stronger(page)).toHaveCount(2);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1)).toBe(false);
+    assertClean(problems);
+  });
+});

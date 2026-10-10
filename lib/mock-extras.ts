@@ -129,6 +129,24 @@ export const mockExtras: ReportExtras = {
     ],
     placeholders: [SLOT],
   },
+  // A second weak paragraph (paragraph 4 drifts off topic), so the example also shows more than one before/after.
+  moreRewrites: [
+    (() => {
+      const original = para("p4").text;
+      const removed = "A better educated population would, in general, make better decisions about every national problem.";
+      const added = "A better educated workforce is also better placed to adapt to a warming climate, from new farming methods to flood preparedness.";
+      if (!original.includes(removed)) throw new Error("mock-extras: p4 text changed, update the second rewrite");
+      return {
+        paragraphId: "p4",
+        original,
+        improved: original.replace(removed, added),
+        removed: [removed],
+        added: [added],
+        changeNotes: [{ what: "Tied the education point back to the essay's topic.", why: "The paragraph drifted from climate and the economy; a claim needs a link to the question." }],
+        placeholders: [],
+      };
+    })(),
+  ],
   benchmark: {
     status: "ok",
     themeLabel: "Climate, water and environment",

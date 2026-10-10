@@ -25,6 +25,7 @@
     "test:coach": "node --env-file-if-exists=.env.local --no-warnings scripts/test-coach.ts",
     "demo:add": "node --no-warnings scripts/add-demo-report.ts",
     "verify:bundle": "node --no-warnings scripts/verify-trace.ts",
+    "make:deck": "node deck/make-deck.mjs",
     "make:fixtures": "node --no-warnings scripts/make-test-bundles.ts",
     "test:e2e": "playwright test",
     "test:e2e:update-screens": "playwright test tests/e2e/screens.spec.ts"
@@ -42,6 +43,8 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "jszip": "^3.10.1",
+    "pptxgenjs": "^3.12.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.6.0"
   }

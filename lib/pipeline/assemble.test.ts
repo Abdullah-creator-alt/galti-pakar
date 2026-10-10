@@ -166,3 +166,19 @@ test("without an examiner the report has no examiner rows and no agreement rate"
   assert.equal(extras.verification?.examinerAgreementRate, undefined);
   assert.equal(extras.verification?.quotesProposed, 0);
 });
+
+test("more rewrites: kept only for real, different paragraphs whose original is the transcript text; the contract parses them", async () => {
+  const text = (id: string) => fx.essay.paragraphs.find((p: { id: string }) => p.id === id).text as string;
+  const good = { rewrite: { paragraphId: "p2", original: text("p2"), improved: `${text("p2")} extra`, removed: [], added: [" extra"] }, changeNotes: [{ what: "W", why: "Y" }], placeholders: [] };
+  const sameAsMain = { ...good, rewrite: { ...good.rewrite, paragraphId: "p5", original: text("p5") } };
+  const unknown = { ...good, rewrite: { ...good.rewrite, paragraphId: "p99" } };
+  const edited = { ...good, rewrite: { ...good.rewrite, paragraphId: "p3", original: "Not the transcript text." } };
+  const { extras } = assembleBundle(await input({ moreRewrites: [good, sameAsMain, unknown, edited] }));
+  assert.deepEqual(extras.moreRewrites?.map((m) => m.paragraphId), ["p2"]);
+  assert.equal(assembleBundle(await input()).extras.moreRewrites, undefined, "omitted when there are none");
+  // The UI contract: valid ones survive, unchanged or out-of-text ones are dropped, never an error.
+  const ok = { paragraphId: "p2", original: "A b c.", improved: "A b d.", removed: ["c"], added: ["d"], changeNotes: [], placeholders: [] };
+  const parsed = parseExtras({ moreRewrites: [ok, { ...ok, improved: ok.original }, { ...ok, added: ["zzz"] }, { paragraphId: "p3" }, 7] });
+  assert.deepEqual(parsed.moreRewrites?.map((m) => m.paragraphId), ["p2"]);
+  assert.equal(parseExtras({ moreRewrites: [ok, ok, ok, ok] }).moreRewrites?.length, 2, "at most two further paragraphs");
+});

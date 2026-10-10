@@ -10,14 +10,17 @@ Rules that shape the work (`rules of hackthon/`, untracked): AI must contribute 
 
 ## Status (update this section when it changes)
 
-Built and working: handwriting read, parallel measuring (structure, genericness+drift, benchmark), examiner second opinion with verified quotes, verify/blend/score (Argument X-Ray), coach (3 fixes + one model paragraph), assembly, `/api/analyze`, `/api/health`, the whole UI (upload with compression, processing, report with X-Ray views, history, demo reports). 245 unit tests, offline.
+Built and working: handwriting read, parallel measuring (structure, genericness+drift, benchmark), examiner second opinion with verified quotes, verify/blend/score (Argument X-Ray), coach (3 fixes + one model paragraph), assembly, `/api/analyze`, `/api/health`, the whole UI (upload with compression, processing, report with X-Ray views, history, demo reports, `/how-it-works` for judges). Per-run Gemini usage (calls/tokens per model) via `withUsage` in `lib/gemini.ts`, logged by the route and shown in the dev Stages table. 256 unit tests offline; Playwright e2e with fixtures (`npm run test:e2e`, never calls AI). `README.md` is the judge-facing write-up (problem, AI table, evaluation, disclosure); `docs/JUDGING-AUDIT.md` maps the rulebook criteria to status and open items. Keep both in step with the code and the numbers in `data/*-eval.json`.
+
+Don't run `npm run dev` and `npm run test:e2e` at the same time: both use `.next/` and break each other.
 
 Known gaps and honesty points:
 - Structure labels come from **one LLM call plus rules; there is no trained structure model**, and nothing uses PERSUADE (a teammate branch `feature/persuade-classifier` exists, unmerged). Do not claim otherwise.
 - Genericness is a logistic regression trained on **synthetic** AI-written sentences; its 100% test accuracy is a smoke test. Benchmark has **no reference essays**, only an AI-written checklist, so the style-profile half is empty.
 - Free-tier quotas limit live demos (see below). Pre-run essays and cache them with `npm run demo:add`.
 - Never run live end to end with embeddings exhausted: drift, genericness, benchmark and claim linking degrade (the report still validates and says so).
-- Not verified in a real browser: layout at 390 px, dark/light, print, keyboard flow, in-browser compression with real photos, hydration.
+- Verified with Playwright (Chromium, fixtures): 390/1280 px, dark/light, keyboard flow, hydration, generated JPEGs. Not verified: print, Safari/Firefox, real phone photos.
+- The processing page's steps are timed estimates (paced on one recorded run), not live progress.
 
 ## Commands
 
@@ -43,7 +46,7 @@ Node 24. In `lib/` and `scripts/` use **relative imports with explicit `.ts` ext
 
 ## Pipeline in one paragraph
 
-validate -> `readHandwriting` (sharp, one vision call, fallback models) -> one request-scoped embedding cache prefetches topic, paragraphs, sentences -> `measureEssay` runs structure | genericness+drift | benchmark in parallel (+ `ruleChecks`) -> `scoreExaminers` (2 AI runs, must quote the essay, code verifies each quote, band is derived in code) -> `blendAnalysis` (claim-to-evidence links, colour rules per sentence, cross-checks, 0.4 measured / 0.6 examiner blend, verdict thresholds 0.7 and 0.5 of the scale, uncalibrated) -> `coachEssay` (code picks the top 3 problems and the paragraph; LLM only explains and rewrites one paragraph; code checks quotes, figures, length, slots) -> `assembleBundle`. A failed measuring stage or examiner continues with a plain warning; no essay or no scoring stops (422/500); busy AI is a 503 with `Retry-After`; coach has template fallbacks. Examiners may be empty in a report.
+validate -> `readHandwriting` (sharp, one vision call, fallback models) -> one request-scoped embedding cache prefetches topic, paragraphs, sentences -> `measureEssay` runs structure | genericness+drift | benchmark in parallel (+ `ruleChecks`) -> `scoreExaminers` (2 AI runs, must quote the essay, code verifies each quote, band is derived in code) -> `blendAnalysis` (claim-to-evidence links, colour rules per sentence, cross-checks, 0.4 measured / 0.6 examiner blend, verdict thresholds 0.7 and 0.5 of the scale, uncalibrated) -> `coachEssay` (code picks the top 3 problems and the weakest paragraphs, up to `COACH.MAX_REWRITES` = 3, only ones with measured problems; LLM only explains and rewrites them, one call each in parallel, the first required and the others best-effort in `extras.moreRewrites`; code checks quotes, figures, length, slots on every rewrite) -> `assembleBundle`. A failed measuring stage or examiner continues with a plain warning; no essay or no scoring stops (422/500); busy AI is a 503 with `Retry-After`; coach has template fallbacks. Examiners may be empty in a report.
 
 ## Things that will bite you
 

@@ -268,6 +268,11 @@ test("identical paragraphs are detected after whitespace normalisation", () => {
 test("debug field is parsed defensively", () => {
   assert.deepEqual(parseDebug({ stages: [{ name: "handwriting", status: "ok", ms: 8545, note: "n" }, { name: 5 }, null, { name: "x", status: "ok", ms: "slow" }] }), { stages: [{ name: "handwriting", status: "ok", ms: 8545, note: "n" }] });
   for (const bad of [undefined, null, 5, {}, { stages: "x" }, { stages: [] }, { stages: [{}] }]) assert.equal(parseDebug(bad), undefined);
+  // Usage per model is kept when complete, dropped when a field is missing.
+  const u = { calls: 2, failed: 0, inputTokens: 10, outputTokens: 3, thinkingTokens: 0, embeddedTexts: 0 };
+  const d = parseDebug({ stages: [{ name: "x", status: "ok", ms: 1 }], meta: { totalMs: 900, usage: { "gemini-3.6-flash": u, broken: { calls: 1 } } } });
+  assert.deepEqual(d?.usage, [{ model: "gemini-3.6-flash", ...u }]);
+  assert.equal(d?.totalMs, 900);
 });
 
 test("friendly error mapping: API message wins, otherwise a plain sentence per status; Retry-After only on 503", () => {

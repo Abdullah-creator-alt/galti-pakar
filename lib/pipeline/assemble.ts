@@ -26,6 +26,8 @@ export interface AssembleInput {
   fixes: Fix[];
   rewrite: Rewrite;
   rewriteExtras?: { changeNotes: { what: string; why: string }[]; placeholders: string[] };
+  /** Other weak paragraphs with their own model version (see coach.ts). Checked against the essay here. */
+  moreRewrites?: { rewrite: Rewrite; changeNotes: { what: string; why: string }[]; placeholders: string[] }[];
   benchmark?: BenchmarkResult;
   /** Plain-language notes about stages that were degraded or skipped. */
   warnings: string[];
@@ -192,6 +194,11 @@ function buildExtras(i: AssembleInput, report: EssayReport): { extras: ReportExt
   // Warnings: stage notes first, then each step's own notes. Plain language, deduplicated.
   const warnings = [...new Set([...i.warnings, ...blend.warnings.map(plainWarning), ...droppedNotes].map((w) => cap(w)))].slice(0, MAX_WARNINGS);
 
+  // A further rewrite is kept only if its paragraph exists, is not the main one, and its "original" is that paragraph's text.
+  const moreRewrites = (i.moreRewrites ?? [])
+    .filter((m) => m.rewrite.paragraphId !== i.rewrite.paragraphId && essay.paragraphs.some((p) => p.id === m.rewrite.paragraphId && p.text === m.rewrite.original))
+    .map((m) => ({ paragraphId: m.rewrite.paragraphId, original: m.rewrite.original, improved: m.rewrite.improved, ...(m.rewrite.removed ? { removed: m.rewrite.removed } : {}), ...(m.rewrite.added ? { added: m.rewrite.added } : {}), changeNotes: m.changeNotes, placeholders: m.placeholders }));
+
   const extras: ReportExtras = {
     ...(Object.keys(trace).length ? { trace: trace as ReportExtras["trace"] } : {}),
     ...(claimMap ? { claimMap } : {}),
@@ -211,6 +218,7 @@ function buildExtras(i: AssembleInput, report: EssayReport): { extras: ReportExt
       uncertain: essay.uncertain.map((u) => ({ paragraphId: u.paragraphId, word: u.word, guess: u.guess })),
     },
     ...(i.rewriteExtras ? { rewriteExtras: { changeNotes: i.rewriteExtras.changeNotes, placeholders: i.rewriteExtras.placeholders } } : {}),
+    ...(moreRewrites.length ? { moreRewrites } : {}),
     ...(benchmark ? { benchmark } : {}),
     ...(warnings.length ? { warnings } : {}),
   };

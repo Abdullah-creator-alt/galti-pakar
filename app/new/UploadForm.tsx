@@ -229,7 +229,7 @@ export function UploadForm() {
         </button>
         {!ready && <p id="submit-why" className="mt-2 text-center text-[13px] text-v-text-muted">{why}</p>}
         <p className="mt-3 text-center text-[12.5px] text-v-text-muted">
-          Your photos are sent only to analyse this essay. They are not saved on this device, only the report is.
+          Your photos are sent to Google&apos;s Gemini AI to read and analyse this essay. Galti Pakar does not store them; only the report is saved, on this device. Upload your own practice essays, nothing private.
         </p>
       </div>
     </form>

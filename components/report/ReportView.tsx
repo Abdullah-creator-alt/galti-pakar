@@ -54,6 +54,8 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
 
   // Development only: the backend's stage table, kept in memory by /analysing?debug=1.
   const debug = process.env.NODE_ENV !== "production" ? getDebug(report.id) : undefined;
+  // Further weak paragraphs with a model version; one that no longer matches a paragraph is not shown.
+  const moreRewrites = (extras?.moreRewrites ?? []).filter((m) => m.paragraphId !== report.rewrite.paragraphId && report.paragraphs.some((p) => p.id === m.paragraphId));
   const mapRows = argumentRowCount(report, extras?.claimMap);
   const showBenchmark = benchmarkVisible(extras?.benchmark);
 
@@ -115,7 +117,25 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
         <Reveal><Fixes report={report} /></Reveal>
 
         <SectionRule title="Before and after" />
-        <Reveal>{sameText(report.rewrite.original, report.rewrite.improved) ? <NoModelParagraph /> : <BeforeAfter report={report} rewriteExtras={extras?.rewriteExtras} />}</Reveal>
+        <Reveal>
+          {sameText(report.rewrite.original, report.rewrite.improved) ? (
+            <NoModelParagraph />
+          ) : (
+            <div className="space-y-10">
+              <BeforeAfter report={report} rewriteExtras={extras?.rewriteExtras} note={moreRewrites.length === 0} />
+              {moreRewrites.map((m, i) => (
+                <BeforeAfter
+                  key={m.paragraphId}
+                  report={report}
+                  rewrite={m}
+                  notes={m.changeNotes}
+                  caption={`Paragraph ${report.paragraphs.findIndex((p) => p.id === m.paragraphId) + 1}, where the checks also found problems.`}
+                  note={i === moreRewrites.length - 1}
+                />
+              ))}
+            </div>
+          )}
+        </Reveal>
 
         {report.examiners.length === 0 && (
           <>
@@ -148,7 +168,7 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
           <LimitationNote text={LIMITATION_TEXT} />
         </div>
         <WarningsNote warnings={extras?.warnings} />
-        {debug && <StagesPanel stages={debug.stages} />}
+        {debug && <StagesPanel stages={debug.stages} usage={debug.usage} />}
         <p className="no-print mt-8 text-center">
           <Link href="/new" className="inline-flex min-h-[44px] items-center text-sm font-semibold text-v-accent-text underline underline-offset-4">
             Analyse another CSS essay

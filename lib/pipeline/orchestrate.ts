@@ -318,7 +318,7 @@ async function execute(input: PipelineInput, opts: PipelineOptions, stages: Stag
       blend: blended,
       fixes,
       rewrite,
-      ...(coachExtras ? { rewriteExtras: { changeNotes: coachExtras.changeNotes, placeholders: coachExtras.placeholdersAdded } } : {}),
+      ...(coachExtras ? { rewriteExtras: { changeNotes: coachExtras.changeNotes, placeholders: coachExtras.placeholdersAdded }, moreRewrites: coachExtras.moreRewrites } : {}),
       ...(benchmarkResult ? { benchmark: benchmarkResult } : {}),
       warnings,
     });

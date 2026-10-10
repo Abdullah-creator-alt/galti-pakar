@@ -1,6 +1,7 @@
 "use client";
 
-import { rangeSentence } from "@/lib/client/status";
+import Link from "next/link";
+import { rangeSentence, type DebugStage, type DebugUsage } from "@/lib/client/status";
 import type { BenchmarkInfo, ExtraConflict, ReportExtras, VerificationInfo } from "@/lib/types.extras";
 import type { EssayReport } from "@/lib/types";
 
@@ -99,7 +100,8 @@ export function VerificationStrip({ v }: { v?: VerificationInfo }) {
           ))}
         </ul>
         <p className="mt-3 text-[12.5px] leading-snug text-v-text-muted">
-          This confirms that each finding points to the exact passage in your essay. It does not prove that every judgement is correct.
+          This confirms that each finding points to the exact passage in your essay. It does not prove that every judgement is correct.{" "}
+          <Link href="/how-it-works" className="font-semibold text-v-accent-text underline underline-offset-4">How the AI and the checks work</Link>
         </p>
       </div>
     </details>
@@ -262,7 +264,7 @@ export function DriftUnmeasured() {
 }
 
 /** Development only: the backend's stage table, from the optional debug field. Never rendered in production builds. */
-export function StagesPanel({ stages }: { stages: { name: string; status: string; ms: number; note?: string }[] }) {
+export function StagesPanel({ stages, usage }: { stages: DebugStage[]; usage?: DebugUsage[] }) {
   return (
     <details data-testid="stages-panel" className="no-print mt-8 rounded-[12px] border border-dashed border-v-border-strong bg-v-surface">
       <summary className="flex min-h-[44px] cursor-pointer items-center px-4 py-3 font-data text-[12px] font-bold uppercase tracking-[0.12em] text-v-text-secondary">Stages (development only)</summary>
@@ -287,6 +289,31 @@ export function StagesPanel({ stages }: { stages: { name: string; status: string
             ))}
           </tbody>
         </table>
+        {usage && usage.length > 0 && (
+          <table className="mt-4 w-full text-left text-[12.5px]">
+            <caption className="pb-1 text-left font-data text-[10.5px] uppercase tracking-[0.1em] text-v-text-muted">Gemini usage for this run</caption>
+            <thead>
+              <tr className="font-data text-[10.5px] uppercase tracking-[0.1em] text-v-text-muted">
+                <th className="py-1 pr-3">Model</th>
+                <th className="py-1 pr-3 text-right">Calls</th>
+                <th className="py-1 pr-3 text-right">Input tokens</th>
+                <th className="py-1 pr-3 text-right">Output tokens</th>
+                <th className="py-1 text-right">Texts embedded</th>
+              </tr>
+            </thead>
+            <tbody className="text-v-text-secondary">
+              {usage.map((u) => (
+                <tr key={u.model} className="border-t border-v-border">
+                  <td className="py-1.5 pr-3 font-semibold text-v-text">{u.model}</td>
+                  <td className="py-1.5 pr-3 text-right font-data">{u.calls}{u.failed ? ` (${u.failed} failed)` : ""}</td>
+                  <td className="py-1.5 pr-3 text-right font-data">{u.inputTokens}</td>
+                  <td className="py-1.5 pr-3 text-right font-data">{u.outputTokens + u.thinkingTokens}</td>
+                  <td className="py-1.5 text-right font-data">{u.embeddedTexts}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </details>
   );
