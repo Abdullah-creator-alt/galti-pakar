@@ -1,0 +1,75 @@
+/**
+ * Plain-words status for a highlight, so colour is never the only signal. Prefers the rule id from the trace when there
+ * is one, and otherwise falls back to the tone and a few cues in the reason text.
+ */
+import type { ClaimMap, LinkStrength, SpanTrace } from "../types.extras.ts";
+import type { Tone } from "../types.ts";
+
+export interface SpanStatus {
+  label: string;
+}
+
+const BY_RULE: Record<string, string> = {
+  orphan_claim: "No evidence found",
+  weak_link_claim: "Weakly linked",
+  unrebutted_counterclaim: "Rebuttal missing",
+  off_topic_paragraph: "Off-topic",
+  generic_sentence: "Generic wording",
+  generic_evidence: "Generic wording",
+  strong_link_claim: "Claim linked to evidence",
+  strong_link_evidence: "Evidence for a claim",
+  specific_evidence: "Specific evidence",
+};
+
+const BY_TONE: Record<Tone, string> = { strong: "Strong", weak: "Weak or generic", offtopic: "Off-topic or unsupported" };
+
+export function spanStatus(tone: Tone, reason: string, trace?: Pick<SpanTrace, "ruleId">): SpanStatus {
+  // A trace may carry several rules joined with "+" (highest precedence first).
+  const rule = trace?.ruleId.split("+")[0]?.trim();
+  if (rule && BY_RULE[rule]) return { label: BY_RULE[rule] };
+  const r = reason.toLowerCase();
+  if (/no linked evidence|no evidence/.test(r)) return { label: BY_RULE.orphan_claim };
+  if (/weakly linked|only weakly/.test(r)) return { label: BY_RULE.weak_link_claim };
+  if (/not answered|unanswered|rebuttal/.test(r)) return { label: BY_RULE.unrebutted_counterclaim };
+  if (/drift|off-topic|off topic/.test(r)) return { label: BY_RULE.off_topic_paragraph };
+  if (/generic/.test(r)) return { label: BY_RULE.generic_sentence };
+  if (tone === "strong" && /backed by|linked/.test(r)) return { label: BY_RULE.strong_link_claim };
+  if (tone === "strong" && /specific|evidence for/.test(r)) return { label: BY_RULE.specific_evidence };
+  return { label: BY_TONE[tone] };
+}
+
+export const STAGE_LABEL = { read: "Read", label: "Label", link: "Link", rule: "Rule", verify: "Verify" } as const;
+
+/** "similarity 0.31, needs 0.45" when both numbers exist; just the similarity when only that does; otherwise null. */
+export function similarityText(trace: Pick<SpanTrace, "similarity" | "threshold">): string | null {
+  const { similarity: s, threshold: t } = trace;
+  if (s === undefined) return null;
+  return t === undefined ? `similarity ${s.toFixed(2)}` : `similarity ${s.toFixed(2)}, needs ${t.toFixed(2)}`;
+}
+
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+/** "6 claims: 3 supported, 1 weak, 2 without evidence" (plus any opposing views left unanswered). */
+export function claimSummaryLine(s: ClaimMap["summary"]): string {
+  const base = `${plural(s.claimsTotal, "claim", "claims")}: ${s.strong} supported, ${s.weak} weak, ${s.orphan} without evidence`;
+  return s.unrebutted > 0 ? `${base}; ${plural(s.unrebutted, "opposing view", "opposing views")} not answered` : base;
+}
+
+export interface LinkChip {
+  label: string;
+  tone: "good" | "flag" | "alert";
+}
+
+export function linkChip(kind: "claim" | "counterclaim", strength: LinkStrength): LinkChip {
+  if (strength === "unrebutted") return { label: "Rebuttal missing", tone: "alert" };
+  if (strength === "orphan") return { label: "No evidence found", tone: "alert" };
+  if (strength === "weak") return { label: kind === "counterclaim" ? "Weakly answered" : "Weak link", tone: "flag" };
+  return { label: kind === "counterclaim" ? "Answered" : "Supported", tone: "good" };
+}
+
+/** Where a value sits against a reference range, in words. No score. */
+export function rangeSentence(label: string, value: number, q1: number, q3: number, position: "below" | "within" | "above"): string {
+  const f = (x: number) => (Math.abs(x) >= 10 ? x.toFixed(0) : x.toFixed(Math.abs(x) < 1 ? 2 : 1));
+  const where = position === "within" ? "inside" : position;
+  return `${label}: yours is ${f(value)}, which is ${where === "inside" ? "inside" : `${where} `}${where === "inside" ? " the typical range" : "the typical range"} (${f(q1)} to ${f(q3)}).`.replace("  ", " ");
+}

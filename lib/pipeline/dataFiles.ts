@@ -1,8 +1,10 @@
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
 import { checkModelFeatures, type GenericnessModel } from "./genericness.ts";
-
-export const DATA_DIR = path.join(process.cwd(), "data");
+// The runtime data files are imported statically, so the bundler copies them into the serverless function and a missing
+// file fails the build instead of failing a request. (Reading them with fs at run time is invisible to Next's file
+// tracing and would ship the whole data/ folder, caches included.) The attribute also lets Node run this file directly.
+import topicsJson from "../../data/topics.embedded.json" with { type: "json" };
+import bankJson from "../../data/generic-bank.embedded.json" with { type: "json" };
+import modelJson from "../../data/genericness-model.json" with { type: "json" };
 
 export interface TopicItem {
   id: string;
@@ -13,33 +15,25 @@ export interface EmbeddedTopic extends TopicItem {
   vec: number[];
 }
 
-function readJson<T>(file: string, fix: string): T {
-  const p = path.join(DATA_DIR, file);
-  if (!existsSync(p)) throw new Error(`Missing data file data/${file}. ${fix}`);
-  try {
-    return JSON.parse(readFileSync(p, "utf8")) as T;
-  } catch (e) {
-    throw new Error(`Could not parse data/${file}: ${(e as Error).message}. ${fix}`);
-  }
-}
-
 export interface Assets {
   topics: EmbeddedTopic[];
   bankVecs: number[][];
   model: GenericnessModel;
 }
 
+/** The raw bundled files, for the health check. */
+export const RAW_ASSETS = { topics: topicsJson as unknown as { topics: EmbeddedTopic[] }, bank: bankJson as unknown as { items: { text: string; vec: number[] }[] }, model: modelJson as unknown as GenericnessModel };
+
 let cached: Assets | null = null;
 
-/** Loads runtime assets once per server instance. Throws a clear error if anything is missing. */
+/** Loads runtime assets once per server instance (module scope, so warm invocations are instant). Throws a clear error if the data is unusable. */
 export function loadAssets(): Assets {
   if (cached) return cached;
-  const build = "Run: npm run build:data";
-  const topics = readJson<{ topics: EmbeddedTopic[] }>("topics.embedded.json", build).topics;
-  const bank = readJson<{ items: { text: string; vec: number[] }[] }>("generic-bank.embedded.json", build).items;
-  const model = readJson<GenericnessModel>("genericness-model.json", "Run: npm run train:genericness");
+  const { topics } = RAW_ASSETS.topics;
+  const bank = RAW_ASSETS.bank.items;
+  const model = RAW_ASSETS.model;
   checkModelFeatures(model);
-  if (!topics.length || !bank.length) throw new Error("data/topics.embedded.json or data/generic-bank.embedded.json is empty. Run: npm run build:data");
+  if (!topics?.length || !bank?.length) throw new Error("data/topics.embedded.json or data/generic-bank.embedded.json is empty. Run: npm run build:data");
   cached = { topics, bankVecs: bank.map((b) => b.vec), model };
   return cached;
 }

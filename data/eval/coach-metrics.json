@@ -1,0 +1,20 @@
+[
+  {
+    "at": "2026-10-10T11:06:16.396Z",
+    "fixture": "essay1.json",
+    "model": "not recorded (run made before answering models were tracked)",
+    "issuesSelected": 3,
+    "fixesFromIssues": 3,
+    "fixesFromDimension": 0,
+    "fixesFromBenchmark": 0,
+    "fixesFromTemplate": 0,
+    "quotesProposed": 3,
+    "quotesVerified": 1,
+    "quotesRejected": 2,
+    "numberGuardTriggers": 0,
+    "slotsInserted": 1,
+    "rewriteLengthRatio": 1.15,
+    "retries": 0,
+    "totalMs": 13586
+  }
+]

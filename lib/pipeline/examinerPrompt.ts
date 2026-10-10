@@ -14,7 +14,7 @@ Return only JSON in the requested format.`;
  */
 export function sanitizeForPrompt(text: string): string {
   return text
-    .replace(/<\s*\/?\s*(essay|findings|rubric|topic|paragraph|measurements|instructions|system|outline)\b[^>]*>/gi, "[tag removed]")
+    .replace(/<\s*\/?\s*(essay|findings|rubric|topic|paragraph|measurements|instructions|system|outline|problems|context|inspiration)\b[^>]*>/gi, "[tag removed]")
     .replace(/\[\[/g, "[ [")
     .replace(/\]\]/g, "] ]")
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "");

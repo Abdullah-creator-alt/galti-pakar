@@ -1,5 +1,3 @@
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
 import { BENCHMARK } from "../config.ts";
 import {
   PROFILE_FEATURES,
@@ -10,7 +8,9 @@ import {
   type CoveragePoint,
   type QualityBasis,
 } from "./benchmark.types.ts";
-import { DATA_DIR, loadAssets, type Assets } from "./dataFiles.ts";
+import { loadAssets, type Assets } from "./dataFiles.ts";
+// Imported statically so it is bundled into the serverless function (see dataFiles.ts).
+import benchmarkJson from "../../data/benchmark.json" with { type: "json" };
 import { embedTexts, type EmbedFn } from "./embed.ts";
 import type { FeatureVector } from "./features.ts";
 import { essayProfile, profileRows } from "./profile.ts";
@@ -33,18 +33,10 @@ export interface BenchmarkDeps {
 
 let cached: Benchmark | null = null;
 
-/** Loads and validates data/benchmark.json. Throws with a clear reason if it is missing or malformed. */
+/** Validates the bundled data/benchmark.json once per server instance. Throws with a clear reason if it is malformed. */
 export function loadBenchmark(): Benchmark {
   if (cached) return cached;
-  const p = path.join(DATA_DIR, "benchmark.json");
-  if (!existsSync(p)) throw new Error("data/benchmark.json is missing. Run: npm run build:benchmark");
-  let json: unknown;
-  try {
-    json = JSON.parse(readFileSync(p, "utf8"));
-  } catch (e) {
-    throw new Error(`data/benchmark.json could not be parsed: ${(e as Error).message}`);
-  }
-  const r = benchmarkSchema.safeParse(json);
+  const r = benchmarkSchema.safeParse(benchmarkJson);
   if (!r.success) throw new Error(`data/benchmark.json is malformed: ${r.error.issues[0]?.message ?? "invalid"}. Run: npm run build:benchmark`);
   cached = r.data;
   return cached;

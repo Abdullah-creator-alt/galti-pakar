@@ -1,0 +1,27 @@
+{
+  "note": "MOCKED: hand-written sample responses for offline runs of npm run test:coach. They were NOT produced by Gemini and say nothing about real model quality.",
+  "fixes": {
+    "issue:drift": {
+      "title": "Bring paragraph 5 back to the topic",
+      "body": "Paragraph 5 turns to education, which an examiner reads as missing the point of the question. Either cut it or tie each sentence back to climate and the economy, for example by showing how weak schooling limits adaptation.",
+      "evidenceQuote": "Education has been neglected for decades in Pakistan and the problem keeps growing."
+    },
+    "issue:orphan_claim": {
+      "title": "Support your claims with evidence",
+      "body": "The claim that floods have damaged public finances stands alone, so an examiner reads it as an assertion. Follow it with one figure from a named source, such as the latest Pakistan Economic Survey, that shows the damage.",
+      "evidenceQuote": "Floods have damaged public finances badly."
+    },
+    "issue:generic": {
+      "title": "Replace filler with specific points",
+      "body": "Paragraph 6 uses stock lines, like the opening about great nations, that fit any essay. Replace each with one point about Pakistan's climate economy, backed by a source you can name.",
+      "evidenceQuote": "Throughout history great nations have risen through unity and hard work."
+    }
+  },
+  "rewrite": {
+    "improved": "Education has been neglected for decades in Pakistan, and this neglect weakens the country's ability to adapt to climate change. Teachers are underpaid and syllabi are outdated in most public schools, while many lack classrooms, desks and clean drinking water [add a school funding figure from the latest Pakistan Economic Survey].",
+    "changeNotes": [
+      { "what": "Linked the education point to climate adaptation.", "why": "The paragraph drifted from the topic; this ties it back." },
+      { "what": "Added a slot for a funding figure.", "why": "The claim needs evidence you look up and verify yourself." }
+    ]
+  }
+}

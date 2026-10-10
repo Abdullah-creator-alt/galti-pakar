@@ -1,0 +1,31 @@
+{
+  "_comment": "Copy to links.json and replace with real, hand-labelled pairs. gold = index of the correct evidence in candidates, or null if the claim has no evidence. Optional claimVec / candidate vec arrays skip the embedding call.",
+  "items": [
+    {
+      "id": "example-1",
+      "claim": "Agriculture is the first sector hit by warming.",
+      "candidates": [
+        { "text": "Wheat yields in Punjab fell by about ten percent after the 2022 heatwave, according to the Economic Survey.", "sameParagraph": true },
+        { "text": "Pakistan spent about 17 billion dollars on fuel imports in 2022.", "sameParagraph": false }
+      ],
+      "gold": 0
+    },
+    {
+      "id": "example-2",
+      "claim": "Floods have damaged public finances badly.",
+      "candidates": [
+        { "text": "Wheat yields in Punjab fell by about ten percent after the 2022 heatwave, according to the Economic Survey.", "sameParagraph": false }
+      ],
+      "gold": null
+    },
+    {
+      "id": "example-3",
+      "claim": "Solar power can cut the fuel import bill.",
+      "candidates": [
+        { "text": "Imported solar panels spread quickly across homes and farms after 2022.", "sameParagraph": true },
+        { "text": "The World Bank estimated flood damage at over thirty billion dollars.", "sameParagraph": false }
+      ],
+      "gold": 0
+    }
+  ]
+}
