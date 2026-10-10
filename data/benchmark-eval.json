@@ -1,0 +1,147 @@
+{
+  "builtAt": "2026-10-10T08:03:58.421Z",
+  "nEssays": 0,
+  "countsByTheme": {
+    "governance": 0,
+    "economy": 0,
+    "climate-water": 0,
+    "education": 0,
+    "security-extremism": 0,
+    "society-gender": 0,
+    "foreign-policy": 0
+  },
+  "referenceLOO": {
+    "status": "insufficient data",
+    "message": "No reference essays were used to build the benchmark, so leave-one-out coverage cannot be evaluated."
+  },
+  "checklistSeparation": {
+    "note": "Uses 40 synthetic on-topic paragraphs against each theme's AI checklist. Indicative only.",
+    "candidates": "whole paragraphs (API unavailable: Gemini 429: You exceeded your current quota, please check yo)",
+    "nParagraphs": 40,
+    "byThreshold": [
+      {
+        "th": 0.5,
+        "auc": 0.5
+      },
+      {
+        "th": 0.52,
+        "auc": 0.5
+      },
+      {
+        "th": 0.54,
+        "auc": 0.5
+      },
+      {
+        "th": 0.56,
+        "auc": 0.5
+      },
+      {
+        "th": 0.58,
+        "auc": 0.5
+      },
+      {
+        "th": 0.6,
+        "auc": 0.5
+      },
+      {
+        "th": 0.62,
+        "auc": 0.5
+      },
+      {
+        "th": 0.64,
+        "auc": 0.5
+      },
+      {
+        "th": 0.66,
+        "auc": 0.5083333333333333
+      },
+      {
+        "th": 0.68,
+        "auc": 0.5197916666666667
+      },
+      {
+        "th": 0.7,
+        "auc": 0.6009895833333333
+      },
+      {
+        "th": 0.72,
+        "auc": 0.6865625
+      },
+      {
+        "th": 0.74,
+        "auc": 0.81796875
+      },
+      {
+        "th": 0.76,
+        "auc": 0.8555729166666667
+      },
+      {
+        "th": 0.78,
+        "auc": 0.8816145833333333
+      },
+      {
+        "th": 0.8,
+        "auc": 0.9058854166666667
+      },
+      {
+        "th": 0.82,
+        "auc": 0.8919270833333334
+      },
+      {
+        "th": 0.84,
+        "auc": 0.8478125
+      },
+      {
+        "th": 0.86,
+        "auc": 0.7655729166666667
+      },
+      {
+        "th": 0.88,
+        "auc": 0.6836458333333333
+      },
+      {
+        "th": 0.9,
+        "auc": 0.61046875
+      },
+      {
+        "th": 0.92,
+        "auc": 0.5125
+      },
+      {
+        "th": 0.94,
+        "auc": 0.5125
+      },
+      {
+        "th": 0.96,
+        "auc": 0.5
+      }
+    ],
+    "recommended": 0.8,
+    "bestAuc": 0.9058854166666667
+  },
+  "themeMatching": {
+    "note": "Leave-one-out over the 50 topics, topic vector only. At runtime the query also includes the essay's own sentences.",
+    "accuracy": 0.5,
+    "correctSimilarity": {
+      "min": 0.8460986220041298,
+      "p05": 0.8557484334115922,
+      "median": 0.8751749489507743
+    },
+    "wrongMatchSimilarityMax": 0.9003576997938736,
+    "topicPlusParagraphAccuracy": 0.625,
+    "unrelatedProbeMaxSimilarity": 0.8263983332725977,
+    "unrelatedProbeSimilarities": [
+      0.8070513069302558,
+      0.760694532904582,
+      0.8263983332725977,
+      0.7851213270211052,
+      0.8187008218372132,
+      0.795304286052484
+    ],
+    "configuredThemeMin": 0.7
+  },
+  "profileSanity": {
+    "status": "insufficient data",
+    "message": "No reference essays: the style profile has no distributions."
+  }
+}

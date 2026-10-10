@@ -88,14 +88,9 @@ export async function labelStructure(_topic: string, _text: string): Promise<Str
 export { analyseGenericnessAndDrift, toSpans } from "./analyse.ts";
 export type { EssayAnalysis, ParagraphAnalysis, SentenceResult } from "./analyse.ts";
 
-/** Step 4: several independent examiner runs scoring the seven rubric dimensions. */
-export interface ExaminerOutput {
-  examiner: ExaminerResult;
-  dimensions: DimensionScore[];
-}
-export async function scoreExaminers(_topic: string, _paragraphs: StructuredParagraph[], _count: number): Promise<ExaminerOutput[]> {
-  throw new NotImplementedError("scoreExaminers");
-}
+/** Step 4: examiner second opinion. Implemented in examiner.ts; re-exported here. */
+export { scoreExaminers } from "./examiner.ts";
+export type { SecondOpinion } from "./findings.types.ts";
 
 /** Step 5: fixes and a rewrite of the weakest paragraph. Depends on steps 2-4. */
 export async function suggestFixes(
