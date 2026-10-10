@@ -12,7 +12,12 @@
     "build:data": "node --env-file-if-exists=.env.local --no-warnings scripts/build-data.ts",
     "train:genericness": "node --no-warnings scripts/train-genericness.ts",
     "eval:drift": "node --no-warnings scripts/eval-drift.ts",
-    "test:genericness": "node --env-file-if-exists=.env.local --no-warnings scripts/test-genericness.ts"
+    "test:genericness": "node --env-file-if-exists=.env.local --no-warnings scripts/test-genericness.ts",
+    "validate:reference": "node --no-warnings scripts/validate-reference.ts",
+    "build:benchmark": "node --env-file-if-exists=.env.local --no-warnings scripts/build-benchmark.ts",
+    "eval:benchmark": "node --env-file-if-exists=.env.local --no-warnings scripts/eval-benchmark.ts",
+    "test:benchmark": "node --env-file-if-exists=.env.local --no-warnings scripts/test-benchmark.ts",
+    "test:examiner": "node --env-file-if-exists=.env.local --no-warnings scripts/test-examiner.ts"
   },
   "dependencies": {
     "next": "^15.1.0",

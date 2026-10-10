@@ -43,3 +43,8 @@ export const CLICHE_PATTERNS: RegExp[] = [
 export function hasCliche(text: string): boolean {
   return CLICHE_PATTERNS.some((re) => re.test(text));
 }
+
+/** Number of cliché patterns found in the text. */
+export function countCliches(text: string): number {
+  return CLICHE_PATTERNS.filter((re) => re.test(text)).length;
+}

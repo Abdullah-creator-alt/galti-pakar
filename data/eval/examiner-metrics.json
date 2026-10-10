@@ -1,0 +1,38 @@
+[
+  {
+    "at": "2026-10-10T09:29:20.911Z",
+    "essay": "essay.txt",
+    "topic": "Climate change and Pakistan's economic future",
+    "runsRequested": 2,
+    "runsSucceeded": 1,
+    "models": [
+      "gemini-3.8-flash"
+    ],
+    "findingsFields": [],
+    "quotes": {
+      "proposed": 11,
+      "verified": 10,
+      "rejected": 1,
+      "catchRate": 0.09090909090909091
+    },
+    "runAgreement": {
+      "agreedCount": 0,
+      "total": 0,
+      "disagreeingDimensions": []
+    },
+    "unverifiedDimensions": [
+      "counter-argument"
+    ],
+    "conflicts": 0,
+    "medianScores": {
+      "thesis": 8.5,
+      "outline": 4.5,
+      "argument": 6,
+      "evidence": 7.5,
+      "counter-argument": 4,
+      "coherence": 4.5,
+      "language": 8.5
+    },
+    "elapsedMs": 20410
+  }
+]
