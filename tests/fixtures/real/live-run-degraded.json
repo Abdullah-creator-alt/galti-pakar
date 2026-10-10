@@ -1,0 +1,319 @@
+{
+ "report": {
+  "id": "gBThKrOVCAM",
+  "topic": "Water scarcity in Pakistan",
+  "analysedAt": "2026-10-10T12:32:48.752Z",
+  "wordCount": 178,
+  "pageCount": 2,
+  "overallScore": 5.9,
+  "overallOutOf": 10,
+  "verdict": "borderline",
+  "dimensions": [
+   {
+    "key": "thesis",
+    "label": "Thesis",
+    "score": 7.9,
+    "outOf": 10,
+    "band": "competitive",
+    "note": "A position sentence is in the introduction. Low confidence: the examiner's evidence could not be verified; 1 conflict between examiner and measurements."
+   },
+   {
+    "key": "outline",
+    "label": "Outline",
+    "score": 4.1,
+    "outOf": 10,
+    "band": "below-pass",
+    "note": "No outline was transcribed. Low confidence: the examiner's evidence could not be verified; 1 conflict between examiner and measurements."
+   },
+   {
+    "key": "argument",
+    "label": "Argument",
+    "score": 4.5,
+    "outOf": 10,
+    "band": "below-pass",
+    "note": "The arguments are logical but remain superficial, relying on general observations rather than deep analysis of the systemic issues."
+   },
+   {
+    "key": "evidence",
+    "label": "Evidence",
+    "score": 4.5,
+    "outOf": 10,
+    "band": "below-pass",
+    "note": "The essay provides some factual context regarding agriculture and the Indus Basin, but lacks specific data or concrete case studies."
+   },
+   {
+    "key": "counter-argument",
+    "label": "Counter-argument",
+    "score": 7.3,
+    "outOf": 10,
+    "band": "competitive",
+    "note": "The candidate acknowledges the 'big dams' perspective and offers alternatives, but the rebuttal is underdeveloped."
+   },
+   {
+    "key": "coherence",
+    "label": "Coherence",
+    "score": 6,
+    "outOf": 10,
+    "band": "borderline",
+    "note": "The essay maintains a consistent line of thought, though the transitions between paragraphs are somewhat abrupt. Low confidence: only one source of evidence; the examiner's evidence could not be verified."
+   },
+   {
+    "key": "language",
+    "label": "Language",
+    "score": 6.8,
+    "outOf": 10,
+    "band": "borderline",
+    "note": "The language is clear and grammatically correct, though the style is simplistic and lacks academic sophistication."
+   }
+  ],
+  "paragraphs": [
+   {
+    "id": "p1",
+    "text": "Water Scarcity in Pakistan. Water is the lifeblood of Pakistan. This essay argues that the country now faces a serious water crisis that threatens farming, the economy and public health, and that it needs storage, better pricing and cooperation between provinces.",
+    "role": "position",
+    "relevance": 100,
+    "summary": "Position",
+    "spans": []
+   },
+   {
+    "id": "p2",
+    "text": "Agriculture uses about ninety percent of the water that Pakistan withdraws. The Indus Basin Irrigation System is one of the largest in the world, but canals leak and farmers still flood their fields. Wheat and cotton need far more water than the system can supply in a dry year.",
+    "role": "evidence",
+    "relevance": 100,
+    "summary": "Evidence",
+    "spans": []
+   },
+   {
+    "id": "p3",
+    "text": "Many people say that building big dams is the only solution. However, small dams, lined canals and drip irrigation can save water at lower cost. The Indus Waters Treaty with India also limits what Pakistan can do on the eastern rivers.",
+    "role": "counter-argument",
+    "relevance": 100,
+    "summary": "Counter-argument",
+    "spans": []
+   },
+   {
+    "id": "p4",
+    "text": "Rainfall is erratic and glaciers are melting. Everybody knows that something must be done. Throughout history great nations have solved their problems through unity and hard work.",
+    "role": "claim",
+    "relevance": 100,
+    "summary": "Claim",
+    "spans": []
+   },
+   {
+    "id": "p5",
+    "text": "In conclusion, Pakistan must store more water, charge a fair price for it and work with India under the treaty.",
+    "role": "conclusion",
+    "relevance": 100,
+    "summary": "Conclusion",
+    "spans": []
+   }
+  ],
+  "driftThreshold": 90,
+  "fixes": [
+   {
+    "rank": 1,
+    "title": "Create a formal essay outline",
+    "body": "Examiners expect a structured roadmap to evaluate your logical flow. Without an outline, your arguments may appear disjointed. Before writing, draft a brief plan listing your thesis statement, key thematic headings for each paragraph, and a summary of your concluding thoughts to ensure a coherent progression of ideas."
+   },
+   {
+    "rank": 2,
+    "title": "Deepen your analytical arguments",
+    "body": "General observations lack the critical depth required for high-level essays. To improve, move beyond stating that water scarcity is a problem. Instead, analyze the systemic failures in water governance or policy implementation. Connect these specific institutional weaknesses to the broader socio-economic impacts on Pakistan's agricultural stability."
+   },
+   {
+    "rank": 3,
+    "title": "Incorporate specific empirical evidence",
+    "body": "Examiners look for precise data to substantiate your claims. General statements about agriculture are insufficient. Support your arguments by citing specific figures from the latest Pakistan Economic Survey regarding water usage efficiency or data from the Indus River System Authority on current reservoir storage levels to demonstrate a rigorous understanding."
+   }
+  ],
+  "rewrite": {
+   "paragraphId": "p2",
+   "original": "Agriculture uses about ninety percent of the water that Pakistan withdraws. The Indus Basin Irrigation System is one of the largest in the world, but canals leak and farmers still flood their fields. Wheat and cotton need far more water than the system can supply in a dry year.",
+   "improved": "Agriculture consumes approximately ninety percent of Pakistan’s withdrawn water. While the Indus Basin Irrigation System remains among the world's largest, inefficient canal infrastructure and traditional flood irrigation practices cause massive wastage [add a statistic on water loss in the irrigation system]. Consequently, water-intensive crops like wheat and cotton face shortages during dry cycles [add a figure on crop yield reduction].",
+   "removed": [
+    "that Pakistan withdraws",
+    "in the world",
+    "but canals leak",
+    "farmers still",
+    "their fields. Wheat and cotton need far more",
+    "can supply in a"
+   ],
+   "added": [
+    "consumes approximately",
+    "Pakistan’s withdrawn",
+    "inefficient canal infrastructure",
+    "irrigation practices cause massive wastage [add a statistic on",
+    "]. Consequently, water-intensive crops like wheat and cotton face shortages during",
+    "cycles [add a figure on crop yield reduction]"
+   ]
+  },
+  "examiners": [
+   {
+    "id": "ai-run-1",
+    "label": "AI run 1",
+    "overall": 5.7,
+    "band": "borderline",
+    "dimensions": {
+     "thesis": "borderline",
+     "outline": "borderline",
+     "argument": "borderline",
+     "evidence": "below-pass",
+     "counter-argument": "borderline",
+     "coherence": "borderline",
+     "language": "borderline"
+    }
+   },
+   {
+    "id": "ai-run-2",
+    "label": "AI run 2",
+    "overall": 5.3,
+    "band": "borderline",
+    "dimensions": {
+     "thesis": "borderline",
+     "outline": "borderline",
+     "argument": "below-pass",
+     "evidence": "below-pass",
+     "counter-argument": "borderline",
+     "coherence": "borderline",
+     "language": "borderline"
+    }
+   }
+  ],
+  "isExample": false
+ },
+ "extras": {
+  "conflicts": [
+   {
+    "id": "score_gap:thesis",
+    "dimension": "thesis",
+    "examinerSays": "Thesis 6.5 out of 10",
+    "measuredSays": "A position sentence is in the introduction. (measured 10 out of 10)"
+   },
+   {
+    "id": "score_gap:outline",
+    "dimension": "outline",
+    "examinerSays": "Outline 5.5 out of 10",
+    "measuredSays": "No outline was transcribed. (measured 2 out of 10)"
+   },
+   {
+    "id": "score_gap:counter-argument",
+    "dimension": "counter-argument",
+    "examinerSays": "Counter-argument 5.5 out of 10",
+    "measuredSays": "1 of 1 opposing view(s) answered. (measured 10 out of 10)"
+   }
+  ],
+  "verification": {
+   "spansProposed": 0,
+   "spansDropped": 0,
+   "quotesProposed": 12,
+   "quotesVerified": 10,
+   "quotesRejected": 2,
+   "conflictsFound": 3,
+   "examinerAgreementRate": 1
+  },
+  "transcription": {
+   "legibility": "good",
+   "uncertain": []
+  },
+  "rewriteExtras": {
+   "changeNotes": [
+    {
+     "what": "Refined vocabulary and sentence structure.",
+     "why": "Improved academic tone and flow while maintaining the original meaning."
+    },
+    {
+     "what": "Inserted two evidence slots.",
+     "why": "Strengthened the argument with specific data points as requested by the prompt."
+    }
+   ],
+   "placeholders": [
+    "[add a statistic on water loss in the irrigation system]",
+    "[add a figure on crop yield reduction]"
+   ]
+  },
+  "warnings": [
+   "Topic-drift and genericness analysis was unavailable for this essay.",
+   "The top-essay comparison was unavailable.",
+   "Claim-to-evidence linking was skipped because the sentence comparison was unavailable.",
+   "No paragraph-level problem was measured; the first body paragraph was chosen.",
+   "Essay length 178 words is outside the expected 1800-3500 (warning only; scores are unchanged)",
+   "Topic relevance could not be measured, so every paragraph is shown as on topic and the drift chart is not meaningful."
+  ]
+ },
+ "debug": {
+  "stages": [
+   {
+    "name": "validate",
+    "status": "ok",
+    "ms": 0
+   },
+   {
+    "name": "handwriting",
+    "status": "ok",
+    "ms": 8545,
+    "note": "legibility good; 5 paragraphs, 178 words"
+   },
+   {
+    "name": "embeddings",
+    "status": "failed",
+    "ms": 15355,
+    "note": "Gemini 429: You exceeded your current quota, please check your plan and billing details. For more information on this er"
+   },
+   {
+    "name": "rules",
+    "status": "ok",
+    "ms": 0
+   },
+   {
+    "name": "structure",
+    "status": "ok",
+    "ms": 7627
+   },
+   {
+    "name": "genericness+drift",
+    "status": "failed",
+    "ms": 6,
+    "note": "embeddings unavailable"
+   },
+   {
+    "name": "benchmark",
+    "status": "failed",
+    "ms": 1,
+    "note": "embeddings unavailable"
+   },
+   {
+    "name": "examiner",
+    "status": "ok",
+    "ms": 9238,
+    "note": "2 run(s)"
+   },
+   {
+    "name": "blend",
+    "status": "ok",
+    "ms": 23
+   },
+   {
+    "name": "coach",
+    "status": "ok",
+    "ms": 5324,
+    "note": "0 template fix(es), 0 retries"
+   },
+   {
+    "name": "assemble",
+    "status": "ok",
+    "ms": 8
+   }
+  ],
+  "meta": {
+   "pages": 2,
+   "words": 178,
+   "models": {
+    "vision": "gemini-3.6-flash",
+    "examiner": "gemini-3.6-flash",
+    "coach": "gemini-3.6-flash",
+    "embedding": "gemini-embedding-001"
+   },
+   "totalMs": 46130
+  }
+ }
+}

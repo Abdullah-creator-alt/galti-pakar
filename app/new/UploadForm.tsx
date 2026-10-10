@@ -123,7 +123,9 @@ export function UploadForm() {
     if (!ready || prep.status !== "ready") return;
     // The photos and topic go into an in-memory store, so the request survives the navigation.
     setSubmission({ topic: topic.trim(), files: prep.files });
-    router.push("/analysing");
+    // Development only: /new?debug=1 carries on to /analysing?debug=1 (the processing page ignores it in production).
+    const debug = new URLSearchParams(window.location.search).get("debug") === "1";
+    router.push(debug ? "/analysing?debug=1" : "/analysing");
   }
 
   return (

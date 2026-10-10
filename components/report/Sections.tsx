@@ -10,14 +10,14 @@ import { BandPill, Button, StateIcon, ToneCard, bandStyle, stateText } from "@/c
 
 export function SummaryStrip({ report }: { report: EssayReport }) {
   const a = examinerAgreement(report.examiners);
+  const hasRuns = report.examiners.length > 0;
   const tiles = [
     { label: "Overall score", value: `${report.overallScore.toFixed(1)} / ${report.overallOutOf}`, state: "ok" as const, bandText: bandStyle[report.verdict].text },
-    { label: "Word count", value: String(report.wordCount), state: "ok" as const },
-    { label: "Paragraphs", value: String(report.paragraphs.length), state: "ok" as const },
-    { label: "AI runs agree", value: a.total ? `${a.modalCount} of ${a.total}` : "None", state: a.state },
+    // With no AI runs there is nothing to agree on, so the tile is left out rather than showing "None".
+    ...(hasRuns ? [{ label: "AI runs agree", value: a.total ? `${a.modalCount} of ${a.total}` : "None", state: a.state }] : []),
   ];
   return (
-    <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[12px] border border-v-border bg-v-border sm:grid-cols-4">
+    <div className={`grid gap-px overflow-hidden rounded-[12px] border border-v-border bg-v-border max-w-md ${hasRuns ? "grid-cols-2" : "grid-cols-1"}`}>
       {tiles.map((t) => (
         <div key={t.label} className="bg-v-surface px-4 py-4 text-center">
           <div className="mb-1.5 flex justify-center">

@@ -5,9 +5,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { DriftChart } from "@/components/report/DriftChart";
 import { ArgumentMap, argumentRowCount } from "@/components/report/ArgumentMap";
 import { EssayView } from "@/components/report/EssayView";
-import { BenchmarkCard, ConflictsList, NotSavedNote, TranscriptionBanner, VerificationStrip, WarningsNote, benchmarkVisible } from "@/components/report/Extras";
+import { BenchmarkCard, ConflictsList, DegradedBanner, DriftUnmeasured, ExaminerUnavailable, NoModelParagraph, NotSavedNote, StagesPanel, TranscriptionBanner, VerificationStrip, WarningsNote, benchmarkVisible } from "@/components/report/Extras";
 import { BeforeAfter, ExaminerPanel, Fixes, Scorecard, Structure, SummaryStrip, verdictSentence } from "@/components/report/Sections";
-import { BandPill, Button, ExampleBanner, LIMITATION_TEXT, LimitationNote, Reveal, SectionRule, Eyebrow } from "@/components/ui";
+import { BandPill, ExampleBanner, LIMITATION_TEXT, LimitationNote, Reveal, SectionRule, Eyebrow } from "@/components/ui";
+import { getDebug } from "@/lib/client/debugStore";
+import { driftUnmeasured, isDegraded, sameText } from "@/lib/client/status";
 import type { BundleSource } from "@/lib/data";
 import type { AnalysisBundle, PassageRef } from "@/lib/types.extras";
 
@@ -50,6 +52,8 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
     el?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
   }, []);
 
+  // Development only: the backend's stage table, kept in memory by /analysing?debug=1.
+  const debug = process.env.NODE_ENV !== "production" ? getDebug(report.id) : undefined;
   const mapRows = argumentRowCount(report, extras?.claimMap);
   const showBenchmark = benchmarkVisible(extras?.benchmark);
 
@@ -68,10 +72,7 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
               <p className="mt-3 text-[15px] text-v-text-secondary">{v.text}</p>
               <p className="mt-1 text-[12.5px] text-v-text-muted">AI-estimated practice scores, not official FPSC marks.</p>
             </div>
-            <div className="no-print flex flex-wrap gap-3">
-              <Button disabled aria-label="Download PDF, coming soon">Download PDF · Coming soon</Button>
-              <Button disabled aria-label="Share, coming soon">Share · Coming soon</Button>
-            </div>
+            <p className="no-print max-w-[22rem] text-[12.5px] leading-snug text-v-text-muted lg:text-right">PDF download and sharing are coming soon.</p>
           </div>
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
             <Detail label="Word count" value={String(report.wordCount)} icon={ic("M4 6h16M4 12h16M4 18h10")} />
@@ -85,6 +86,7 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
       <main className="mx-auto max-w-[1120px] px-4 pb-24 pt-10 sm:px-8">
         {report.isExample && <ExampleBanner />}
         {source === "memory" && <NotSavedNote />}
+        {isDegraded(extras?.warnings) && <DegradedBanner />}
         <TranscriptionBanner info={extras?.transcription} />
         <SummaryStrip report={report} />
 
@@ -97,7 +99,7 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
         </Reveal>
 
         <SectionRule title="Topic drift" />
-        <Reveal><DriftChart paragraphs={report.paragraphs} threshold={report.driftThreshold} /></Reveal>
+        <Reveal>{driftUnmeasured(extras?.warnings) ? <DriftUnmeasured /> : <DriftChart paragraphs={report.paragraphs} threshold={report.driftThreshold} />}</Reveal>
 
         {mapRows > 0 && extras?.claimMap && (
           <>
@@ -113,8 +115,14 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
         <Reveal><Fixes report={report} /></Reveal>
 
         <SectionRule title="Before and after" />
-        <Reveal><BeforeAfter report={report} rewriteExtras={extras?.rewriteExtras} /></Reveal>
+        <Reveal>{sameText(report.rewrite.original, report.rewrite.improved) ? <NoModelParagraph /> : <BeforeAfter report={report} rewriteExtras={extras?.rewriteExtras} />}</Reveal>
 
+        {report.examiners.length === 0 && (
+          <>
+            <SectionRule title="AI examiner runs" />
+            <Reveal><ExaminerUnavailable /></Reveal>
+          </>
+        )}
         {report.examiners.length > 0 && (
           <>
             <SectionRule title="AI examiner runs" />
@@ -140,6 +148,7 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
           <LimitationNote text={LIMITATION_TEXT} />
         </div>
         <WarningsNote warnings={extras?.warnings} />
+        {debug && <StagesPanel stages={debug.stages} />}
         <p className="no-print mt-8 text-center">
           <Link href="/new" className="inline-flex min-h-[44px] items-center text-sm font-semibold text-v-accent-text underline underline-offset-4">
             Analyse another essay

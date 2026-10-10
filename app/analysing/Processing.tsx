@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, ButtonLink, Eyebrow, StateIcon } from "@/components/ui";
 import { clearSubmission, getSubmission, startAnalysis } from "@/lib/client/analysisStore";
+import { setDebug } from "@/lib/client/debugStore";
 import { saveBundle } from "@/lib/storage";
 
 const STEPS = [
@@ -27,7 +28,11 @@ interface Failure {
   message: string;
   kind: string;
   atStep: number;
+  retryAfterSec?: number;
 }
+
+/** Development only: ?debug=1 asks the server for its stage table (it answers only when ALLOW_DEBUG is on). */
+const DEV = process.env.NODE_ENV !== "production";
 
 export function Processing() {
   const router = useRouter();
@@ -42,6 +47,8 @@ export function Processing() {
   const [elapsed, setElapsed] = useState(0);
   const [finish, setFinish] = useState(0);
   const [failure, setFailure] = useState<Failure | null>(null);
+  const [cooldown, setCooldown] = useState(0); // seconds Try again stays disabled after a 503 with Retry-After
+  const debugOn = params.get("debug") === "1";
   const startRef = useRef(Date.now());
   const target = useRef<string | null>(null);
   const simulate = failAt > 0 && attempt === 0;
@@ -55,15 +62,17 @@ export function Processing() {
     setFailure(null);
     setPhase("running");
     if (simulate) return;
-    startAnalysis({ force: attempt > 0 }).then((r) => {
+    startAnalysis({ force: attempt > 0, debug: DEV && debugOn }).then((r) => {
       if (!alive) return;
       if (r.ok) {
         saveBundle(r.bundle);
+        if (DEV && r.debug) setDebug(r.bundle.report.id, r.debug); // memory only, never storage
         target.current = `/report/${encodeURIComponent(r.bundle.report.id)}`;
         setFinish(Math.max(stepAt(Date.now() - startRef.current), 0));
         setPhase("finishing");
       } else {
-        setFailure({ message: r.message, kind: r.kind, atStep: stepAt(Date.now() - startRef.current) });
+        setFailure({ message: r.message, kind: r.kind, atStep: stepAt(Date.now() - startRef.current), retryAfterSec: r.retryAfterSec });
+        setCooldown(r.retryAfterSec ?? 0);
         setPhase("failed");
       }
     });
@@ -85,6 +94,13 @@ export function Processing() {
     }, 250);
     return () => clearInterval(id);
   }, [phase, simulate, failAt]);
+
+  // Count the cooldown down once a second.
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const id = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(id);
+  }, [cooldown]);
 
   // The report has arrived: fast-forward the remaining steps, then open it.
   useEffect(() => {
@@ -142,7 +158,7 @@ export function Processing() {
           <p className="text-sm font-semibold text-v-flag-text">{failure.message}</p>
           {!noPhotos && <p className="mt-1 text-sm leading-snug text-v-flag-text">Your photos are still here. You can try again without adding them again.</p>}
           <div className="mt-3 flex flex-wrap gap-3">
-            {noPhotos ? <ButtonLink href="/new" arrow={false}>Add photos again</ButtonLink> : <Button variant="primary" onClick={() => setAttempt((a) => a + 1)}>Try again</Button>}
+            {noPhotos ? <ButtonLink href="/new" arrow={false}>Add photos again</ButtonLink> : <Button variant="primary" disabled={cooldown > 0} onClick={() => setAttempt((a) => a + 1)}>{cooldown > 0 ? `Try again in ${cooldown}s` : "Try again"}</Button>}
             <ButtonLink href="/report/example" variant="secondary" arrow={false}>Open a sample analysis instead</ButtonLink>
           </div>
         </div>

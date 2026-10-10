@@ -169,7 +169,7 @@ test("startAnalysis: sends topic and images in order, shares one request, and re
 test("startAnalysis: API messages, platform errors, network failures, timeouts and missing photos", async () => {
   setSubmission({ topic: "Water", files: [file("a.jpg")] });
   const api = await startAnalysis({ force: true, fetchFn: (async () => jsonResponse({ error: { message: "Add the essay topic before analysing." } }, 400)) as unknown as typeof fetch });
-  assert.deepEqual(api, { ok: false, kind: "api", message: "Add the essay topic before analysing." });
+  assert.deepEqual(api, { ok: false, kind: "api", message: "Add the essay topic before analysing.", status: 400 });
 
   const html = await startAnalysis({ force: true, fetchFn: (async () => new Response("<html>Request Entity Too Large</html>", { status: 413 })) as unknown as typeof fetch });
   assert.equal(html.ok, false);
@@ -231,4 +231,80 @@ test("range sentence describes position without a score", () => {
   assert.match(rangeSentence("Details", 3.1, 3.8, 5.6, "below"), /yours is 3\.1, which is below the typical range \(3\.8 to 5\.6\)/);
   assert.match(rangeSentence("Details", 4.2, 3.8, 5.6, "within"), /inside the typical range/);
   assert.match(rangeSentence("Clichés", 0.34, 0.05, 0.3, "above"), /which is above the typical range \(0\.05 to 0\.30\)/);
+});
+
+/* ---------- integration helpers ---------- */
+
+import { FRIENDLY, failureFor, parseRetryAfter } from "./analysisStore.ts";
+import { driftUnmeasured, isDegraded, parseDebug, sameText } from "./status.ts";
+
+test("degraded-analysis detection recognises the backend's real warning wording", () => {
+  for (const w of [
+    "Topic-drift and genericness analysis was unavailable for this essay.",
+    "The AI examiner's opinion was unavailable; scores use the measurements only.",
+    "Structure labels were unavailable, so the argument map and some scores are limited.",
+    "The fixes were written from templates because the AI coach was unavailable.",
+    "A model paragraph could not be written this time, so the paragraph shown under Before and after is your own, unchanged.",
+    "Claim-to-evidence linking was skipped because the sentence comparison was unavailable.",
+    "2 argument-map row(s) were left out because they did not match your essay text.",
+  ]) assert.equal(isDegraded([w]), true, w);
+  for (const w of ["Essay length 178 words is outside the expected 1800-3500 (warning only; scores are unchanged)", "Handwriting note: page 2 is slightly skewed."]) assert.equal(isDegraded([w]), false, w);
+  assert.equal(isDegraded(undefined), false);
+  assert.equal(isDegraded([]), false);
+});
+
+test("unmeasured drift is detected from the backend's warning", () => {
+  assert.equal(driftUnmeasured(["Topic relevance could not be measured, so every paragraph is shown as on topic and the drift chart is not meaningful."]), true);
+  assert.equal(driftUnmeasured(["Something else."]), false);
+  assert.equal(driftUnmeasured(undefined), false);
+});
+
+test("identical paragraphs are detected after whitespace normalisation", () => {
+  assert.equal(sameText("Water is vital.  It is.", "Water is vital. It is."), true);
+  assert.equal(sameText(" a\nb ", "a b"), true);
+  assert.equal(sameText("a b", "a c"), false);
+});
+
+test("debug field is parsed defensively", () => {
+  assert.deepEqual(parseDebug({ stages: [{ name: "handwriting", status: "ok", ms: 8545, note: "n" }, { name: 5 }, null, { name: "x", status: "ok", ms: "slow" }] }), { stages: [{ name: "handwriting", status: "ok", ms: 8545, note: "n" }] });
+  for (const bad of [undefined, null, 5, {}, { stages: "x" }, { stages: [] }, { stages: [{}] }]) assert.equal(parseDebug(bad), undefined);
+});
+
+test("friendly error mapping: API message wins, otherwise a plain sentence per status; Retry-After only on 503", () => {
+  assert.match(FRIENDLY[413], /fewer pages/);
+  assert.match(FRIENDLY[422], /brighter, flatter photo/);
+  assert.match(FRIENDLY[503], /busy.*about a minute/);
+  assert.match(FRIENDLY[504], /too long/);
+  assert.equal(failureFor(422, null).message, FRIENDLY[422]);
+  assert.equal(failureFor(422, "Custom message.").message, "Custom message.");
+  assert.equal(failureFor(504, null).kind, "timeout");
+  assert.deepEqual(failureFor(503, null, "45"), { ok: false, kind: "api", message: FRIENDLY[503], status: 503, retryAfterSec: 45 });
+  assert.equal(failureFor(500, null, "45").retryAfterSec, undefined);
+  assert.match(failureFor(500, null).message, /Something went wrong/);
+  assert.equal(parseRetryAfter("60"), 60);
+  assert.equal(parseRetryAfter("1.2"), 2);
+  assert.equal(parseRetryAfter("99999"), 600);
+  for (const bad of [null, undefined, "", "soon", "-5", "0", "Wed, 21 Oct 2026 07:28:00 GMT"]) assert.equal(parseRetryAfter(bad), undefined, String(bad));
+});
+
+test("startAnalysis reads Retry-After on a 503, and sends x-debug only when asked", async () => {
+  setSubmission({ topic: "Water", files: [file("a.jpg")] });
+  const busy = await startAnalysis({ force: true, fetchFn: (async () => new Response(JSON.stringify({ error: { message: "The AI service is busy. Please try again in a minute." } }), { status: 503, headers: { "retry-after": "60", "content-type": "application/json" } })) as unknown as typeof fetch });
+  assert.ok(!busy.ok);
+  if (!busy.ok) { assert.equal(busy.retryAfterSec, 60); assert.equal(busy.status, 503); assert.match(busy.message, /busy/); }
+
+  const seen: (HeadersInit | undefined)[] = [];
+  const ok = (async (_u: string, init: RequestInit) => (seen.push(init.headers), jsonResponse({ report: clone(mockBundle.report), debug: { stages: [{ name: "handwriting", status: "ok", ms: 5 }] } }))) as unknown as typeof fetch;
+  const plain = await startAnalysis({ force: true, fetchFn: ok });
+  const withDebug = await startAnalysis({ force: true, fetchFn: ok, debug: true });
+  assert.equal(seen[0], undefined, "no debug header by default");
+  assert.deepEqual(seen[1], { "x-debug": "1" });
+  assert.ok(plain.ok && withDebug.ok);
+  if (withDebug.ok) assert.deepEqual(withDebug.debug, { stages: [{ name: "handwriting", status: "ok", ms: 5 }] });
+  clearSubmission();
+});
+
+test("the request timeout is raised to about 115 seconds", async () => {
+  const { ANALYZE_TIMEOUT_MS } = await import("./analysisStore.ts");
+  assert.equal(ANALYZE_TIMEOUT_MS, 115_000);
 });

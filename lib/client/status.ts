@@ -73,3 +73,40 @@ export function rangeSentence(label: string, value: number, q1: number, q3: numb
   const where = position === "within" ? "inside" : position;
   return `${label}: yours is ${f(value)}, which is ${where === "inside" ? "inside" : `${where} `}${where === "inside" ? " the typical range" : "the typical range"} (${f(q1)} to ${f(q3)}).`.replace("  ", " ");
 }
+
+/* ---------- degraded-analysis detection ---------- */
+
+/** Warnings that mean a check or a stage did not run, so the report deserves a neutral heads-up at the top. */
+const DEGRADED = /unavailable|fallback|degrad|skipped|left out|written from templates|could not be (written|measured)|not checked|did not pass checks|weaker model/i;
+export function isDegraded(warnings: readonly string[] | undefined): boolean {
+  return !!warnings?.some((w) => DEGRADED.test(w));
+}
+
+/** The backend defaults every paragraph's relevance to 100 when it could not measure drift, and says so in a warning. */
+export function driftUnmeasured(warnings: readonly string[] | undefined): boolean {
+  return !!warnings?.some((w) => /topic relevance could not be measured/i.test(w));
+}
+
+/** Two paragraphs are the same if only whitespace differs. */
+export const sameText = (a: string, b: string): boolean => a.replace(/\s+/g, " ").trim() === b.replace(/\s+/g, " ").trim();
+
+export interface DebugStage {
+  name: string;
+  status: string;
+  ms: number;
+  note?: string;
+}
+export interface DebugInfo {
+  stages: DebugStage[];
+}
+
+/** Defensive parse of the backend's optional debug field. Anything malformed is dropped. */
+export function parseDebug(input: unknown): DebugInfo | undefined {
+  const stages = (input as { stages?: unknown })?.stages;
+  if (!Array.isArray(stages)) return undefined;
+  const ok = stages.flatMap((s) => {
+    const o = s as Partial<DebugStage>;
+    return typeof o?.name === "string" && typeof o.status === "string" && typeof o.ms === "number" ? [{ name: o.name.slice(0, 40), status: o.status.slice(0, 20), ms: o.ms, ...(typeof o.note === "string" ? { note: o.note.slice(0, 200) } : {}) }] : [];
+  });
+  return ok.length ? { stages: ok } : undefined;
+}

@@ -24,7 +24,10 @@
     "tune-links": "node --env-file-if-exists=.env.local --no-warnings scripts/tune-links.ts",
     "test:coach": "node --env-file-if-exists=.env.local --no-warnings scripts/test-coach.ts",
     "demo:add": "node --no-warnings scripts/add-demo-report.ts",
-    "verify:bundle": "node --no-warnings scripts/verify-trace.ts"
+    "verify:bundle": "node --no-warnings scripts/verify-trace.ts",
+    "make:fixtures": "node --no-warnings scripts/make-test-bundles.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:update-screens": "playwright test tests/e2e/screens.spec.ts"
   },
   "dependencies": {
     "next": "^15.1.0",
@@ -34,6 +37,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",

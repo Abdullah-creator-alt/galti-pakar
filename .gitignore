@@ -16,3 +16,8 @@ training/**/__pycache__/
 *.pt
 *.safetensors
 *.onnx
+
+tests/assets/private/
+tests/screenshots/
+test-results/
+playwright-report/
