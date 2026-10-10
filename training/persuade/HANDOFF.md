@@ -181,9 +181,54 @@ All rules from the brief apply; the essentials:
 7. **Injection point:** `analyzeEssayStructure(input, deps)` takes injected dependencies (see `StructureDeps` in `lib/structure/analyze.ts`). Add an optional `classify?: (text, sentences) => Promise<ClassifierOutput | null>` dependency and call the fusion after the element-extraction step and before the linking step in `analyze.ts`. Do not add Python or model weights to the Next.js bundle.
 8. **Tests (no network, no checkpoint, no data):** span-to-sentence mapping (incl. UTF-16/emoji), long-input reconstruction, model-output schema, fusion for agreement / disagreement / low confidence / missing output, Gemini-only fallback, feature-flag behaviour, failure handling, and the existing test suite unchanged (re-run it; do not rely on a count).
 
-## 11. Phase 5: deployment design (NOT STARTED; measure, do not assume)
+## 11. Phase 5: deployment on Vercel (budget and measurements; NOT STARTED)
 
-Candidates: (a) ONNX Runtime in Node inside the Vercel function, (b) a separate secured inference service, (c) offline-only. Evidence to collect before choosing: exported ONNX size (fp32 and int8-quantised), `onnxruntime-node` package size, peak memory and cold-start/latency for a 600-token and a 1,500-token essay, and the **current** Vercel limits for function size, memory and duration (check the live docs and the project's own route/function configuration). Working hypothesis, unverified: a base-size encoder plus the ONNX runtime is likely too large/slow for a Vercel function, a small distilled model might fit, and a separate service adds cost, auth and operations. Document cost, security, latency, operational needs and configuration for whichever option is recommended. Keep API keys server-side; never add an external service, deploy weights, or expose a new endpoint without the owner's approval.
+**Rule: the classifier must stay well inside Vercel's limits, with headroom, and must not ship until the licence decision in section 13 is recorded.** Nothing here is measured yet except the Vercel limits and the npm package sizes. Model sizes are estimates from parameter counts.
+
+### Vercel limits (checked from Vercel's docs, "Vercel Functions Limits", last updated 2026-08-24)
+
+| Limit | Value | Source of limit |
+|---|---|---|
+| Function size, uncompressed, incl. layers | **250 MB** per function (enforced by AWS Lambda) | Vercel |
+| Large functions beta | up to 5 GB; **do not use**, it is beta and would add dependence on a beta feature | Vercel |
+| Memory | Hobby: 2 GB / 1 vCPU. Pro: 2 GB default, max 4 GB / 2 vCPU | Vercel |
+| Duration | Hobby: 300 s default and max. Pro: 300 s default, 800 s max | Vercel |
+| Request or response body | 4.5 MB | Vercel |
+| Our route setting | `maxDuration = 60` in the app's own route file | project config, not a Vercel limit |
+
+Design for the **Hobby** limits (2 GB, 250 MB, 300 s) so it works on either plan.
+
+### Our budget (self-imposed headroom)
+
+| Item | Budget | Basis / status |
+|---|---|---|
+| Whole function bundle, uncompressed | **target <= 120 MB, hard ceiling 200 MB** | 50% and 80% of the 250 MB limit, leaving room for the app's own code and growth |
+| Model weights in the function | **int8 ONNX, <= 100 MB** | distilroberta-base int8 is an estimate of about 80 MB. fp32 is about 330 MB (not allowed inside the function) |
+| ONNX runtime | **must be trimmed to the linux-x64 binary only** | `onnxruntime-node` 1.30.0 is **301 MB unpacked** on npm across all platforms, so bundling it whole is not acceptable. The trimmed size is **not measured yet** |
+| Memory per invocation | model load + session <= **1 GB** | half of the 2 GB Hobby limit |
+| Duration per essay (cold start incl. model load) | target <= **20 s**, hard limit 300 s | estimate only; must be measured on a Vercel preview |
+| Payload | send essay **text** only (<= 40,000 characters, far below 4.5 MB); never images | `lib/structure/analyze.ts` limit |
+
+### If the budget cannot be met
+
+Choose one, and record it here before deciding:
+1. A separate authenticated inference service (adds cost, secrets handling, uptime work and a new endpoint, all needing owner approval).
+2. Keep the classifier offline or in shadow mode only (no deployment of weights).
+
+Do not raise the budget to fit a larger model. Do not switch to the 5 GB large-functions beta to avoid the limit.
+
+### Measurements required before any production decision
+
+Run these on the GPU PC or in a scratch project, not in the production app:
+1. Export the fine-tuned model to ONNX and quantise to int8. Record the file size. Check accuracy drop on validation data against the fp32 model.
+2. Install `onnxruntime-node` in a scratch Next.js project and keep only the linux-x64 binary. Record its size.
+3. Run `next build` (and `vercel build` if available) and record the size of the function bundle, including `.vercel/output` if produced. Compare with the budget above.
+4. Deploy to a Vercel **preview** only. Record cold-start time, warm time per essay, and peak memory from the function logs, for one short and one long essay (about 600 and 1,500 words).
+5. Write the results into this section with dates and the exact Vercel plan used. Until these results exist, the classifier is **not** deployable.
+
+### Current verdict
+
+Not yet verified as deployable. It is plausible within the budget only if an int8 model and a linux-only runtime both fit, and the licence decision in section 13 is recorded first.
 
 ## 12. Phase 6: CSS-specific direction
 
