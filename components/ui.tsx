@@ -218,7 +218,7 @@ export function BandPill({ band, label, small }: { band: Band; label?: string; s
 
 export function Logo() {
   return (
-    <Link href="/" className="inline-flex min-h-[44px] items-center text-[17px] font-extrabold uppercase tracking-tight text-v-text">
+    <Link href="/" className="inline-flex min-h-[44px] items-center whitespace-nowrap text-[17px] font-extrabold uppercase tracking-tight text-v-text">
       <span className="text-v-accent-text">G</span>ALTI PAKAR
     </Link>
   );

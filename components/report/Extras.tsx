@@ -217,3 +217,77 @@ export function WarningsNote({ warnings }: { warnings?: string[] }) {
 export function benchmarkVisible(b?: BenchmarkInfo): boolean {
   return !!b && b.status !== "unavailable" && (!!b.coverage || !!(b.profile && b.profile.length));
 }
+
+/* ---------- partial-analysis notices ---------- */
+
+const NEUTRAL = "mb-6 flex items-start gap-3 rounded-[10px] border border-v-border bg-v-surface px-4 py-3";
+
+/** A neutral heads-up at the top when a check or stage did not run. The details are in "Notes about this analysis". */
+export function DegradedBanner() {
+  return (
+    <div role="note" className={NEUTRAL}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className="mt-[1px] shrink-0 text-v-text-muted" aria-hidden>
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 8v5M12 16.5h.01" />
+      </svg>
+      <p className="text-sm leading-snug text-v-text-secondary">
+        Some checks were unavailable for this analysis. The report below uses what could be measured; see the notes at the bottom for details.
+      </p>
+    </div>
+  );
+}
+
+export function ExaminerUnavailable() {
+  return (
+    <p role="note" className="rounded-[12px] border border-v-border bg-v-surface px-4 py-3 text-[14px] leading-snug text-v-text-secondary">
+      AI examiner opinion unavailable, scores use measurements only.
+    </p>
+  );
+}
+
+export function NoModelParagraph() {
+  return (
+    <p role="note" className="rounded-[12px] border border-v-border bg-v-surface px-4 py-3 text-[14px] leading-snug text-v-text-secondary">
+      No model paragraph this time. A rewritten version could not be produced, so there is nothing to compare your paragraph with. The fixes above still apply.
+    </p>
+  );
+}
+
+export function DriftUnmeasured() {
+  return (
+    <p role="note" className="rounded-[12px] border border-v-border bg-v-surface px-4 py-3 text-[14px] leading-snug text-v-text-secondary">
+      Topic drift could not be measured for this essay, so there is no chart to show.
+    </p>
+  );
+}
+
+/** Development only: the backend's stage table, from the optional debug field. Never rendered in production builds. */
+export function StagesPanel({ stages }: { stages: { name: string; status: string; ms: number; note?: string }[] }) {
+  return (
+    <details data-testid="stages-panel" className="no-print mt-8 rounded-[12px] border border-dashed border-v-border-strong bg-v-surface">
+      <summary className="flex min-h-[44px] cursor-pointer items-center px-4 py-3 font-data text-[12px] font-bold uppercase tracking-[0.12em] text-v-text-secondary">Stages (development only)</summary>
+      <div className="overflow-x-auto border-t border-v-border px-4 py-3">
+        <table className="w-full text-left text-[12.5px]">
+          <thead>
+            <tr className="font-data text-[10.5px] uppercase tracking-[0.1em] text-v-text-muted">
+              <th className="py-1 pr-3">Stage</th>
+              <th className="py-1 pr-3">Status</th>
+              <th className="py-1 pr-3 text-right">ms</th>
+              <th className="py-1">Note</th>
+            </tr>
+          </thead>
+          <tbody className="align-top text-v-text-secondary">
+            {stages.map((s, i) => (
+              <tr key={i} className="border-t border-v-border">
+                <td className="py-1.5 pr-3 font-semibold text-v-text">{s.name}</td>
+                <td className="py-1.5 pr-3">{s.status}</td>
+                <td className="py-1.5 pr-3 text-right font-data">{s.ms}</td>
+                <td className="break-words py-1.5">{s.note ?? ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  );
+}

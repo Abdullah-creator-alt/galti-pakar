@@ -73,13 +73,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Container className="flex h-[64px] items-center justify-between">
           <Logo />
           <nav className="flex items-center gap-1 sm:gap-3" aria-label="Main">
-            <Link href="/history" className="inline-flex min-h-[44px] items-center px-3 text-[13px] font-semibold text-v-text-secondary hover:text-v-text">
+            <Link href="/history" className="inline-flex min-h-[44px] items-center whitespace-nowrap px-2 text-[13px] font-semibold text-v-text-secondary hover:text-v-text sm:px-3">
               My essays
             </Link>
             <ThemeToggle />
             <Link
               href="/new"
-              className="inline-flex min-h-[44px] items-center rounded-full bg-[#0a0a0a] px-5 text-[13px] font-semibold text-white  border border-v-border-strong"
+              className="inline-flex min-h-[44px] items-center whitespace-nowrap rounded-full bg-[#0a0a0a] px-4 sm:px-5 text-[13px] font-semibold text-white  border border-v-border-strong"
               style={{ color: "#fff" }}
             >
               New essay

@@ -3,8 +3,9 @@
  * { report, extras } and a bare EssayReport, and a missing report id is replaced with a generated one.
  */
 import { parseBundle, type AnalysisBundle } from "../types.extras.ts";
+import { parseDebug, type DebugInfo } from "./status.ts";
 
-export type ParsedResponse = { ok: true; bundle: AnalysisBundle } | { ok: false; message: string; detail?: string };
+export type ParsedResponse = { ok: true; bundle: AnalysisBundle; debug?: DebugInfo } | { ok: false; message: string; detail?: string };
 
 const isObject = (x: unknown): x is Record<string, unknown> => !!x && typeof x === "object" && !Array.isArray(x);
 
@@ -40,5 +41,6 @@ export function parseAnalyzeResponse(json: unknown, newId: () => string = makeId
   const r = report as Record<string, unknown>;
   const withId = typeof r.id === "string" && r.id.trim() ? report : { ...r, id: newId() };
   const parsed = parseBundle({ report: withId, extras });
-  return parsed.ok ? { ok: true, bundle: parsed.bundle } : { ok: false, message: UNEXPECTED_FORMAT, detail: parsed.error };
+  const debug = parseDebug(json.debug);
+  return parsed.ok ? { ok: true, bundle: parsed.bundle, ...(debug ? { debug } : {}) } : { ok: false, message: UNEXPECTED_FORMAT, detail: parsed.error };
 }

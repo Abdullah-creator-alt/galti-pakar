@@ -7,3 +7,7 @@ next-env.d.ts
 data/cache/
 data/reference-raw/*
 !data/reference-raw/README.md
+tests/assets/private/
+tests/screenshots/
+test-results/
+playwright-report/

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "full",
+    "valid": true,
+    "note": "All extras present (synthetic example data)"
+  },
+  {
+    "name": "no-extras",
+    "valid": true,
+    "note": "Report only, no extras"
+  },
+  {
+    "name": "empty-trace",
+    "valid": true,
+    "note": "extras.trace is an empty object"
+  },
+  {
+    "name": "no-examiners",
+    "valid": true,
+    "note": "examiners: [] (measured-only scores)"
+  },
+  {
+    "name": "rewrite-identical",
+    "valid": true,
+    "note": "rewrite.original equals rewrite.improved"
+  },
+  {
+    "name": "poor-legibility",
+    "valid": true,
+    "note": "legibility poor with uncertain words that exist in the text"
+  },
+  {
+    "name": "benchmark-unavailable",
+    "valid": true,
+    "note": "benchmark.status unavailable"
+  },
+  {
+    "name": "benchmark-ok",
+    "valid": true,
+    "note": "benchmark.status ok with coverage and profile"
+  },
+  {
+    "name": "long-warnings",
+    "valid": true,
+    "note": "8 long warnings, including an unbroken token"
+  },
+  {
+    "name": "link-out-of-range",
+    "valid": true,
+    "note": "a trace link and an argument-map row point outside their paragraph"
+  },
+  {
+    "name": "very-long",
+    "valid": true,
+    "note": "3,000 words, 12 paragraphs, 48 highlights"
+  },
+  {
+    "name": "invalid-report",
+    "valid": false,
+    "note": "INTENTIONALLY INVALID: a span runs past its paragraph, so the report schema rejects it"
+  },
+  {
+    "name": "real-degraded",
+    "valid": true,
+    "note": "REAL backend response (embeddings quota exhausted: no drift, genericness, benchmark or claim map)"
+  },
+  {
+    "name": "real-degraded-debug",
+    "valid": true,
+    "note": "The same real response including the debug field"
+  }
+]

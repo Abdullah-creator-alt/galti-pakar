@@ -1,7 +1,8 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { highlightCounts } from "@/lib/derive";
+import { sliceRef } from "@/lib/client/excerpts";
 import { STAGE_LABEL, similarityText, spanStatus } from "@/lib/client/status";
 import { spanKey, type PassageRef, type SpanTrace, type SpanKey, type TranscriptionInfo } from "@/lib/types.extras";
 import type { Paragraph, Tone } from "@/lib/types";
@@ -91,12 +92,19 @@ export function EssayView({
   const [hidden, setHidden] = useState<Set<Tone>>(new Set());
   const [pick, setPick] = useState<Pick | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  /** The highlight that opened the sheet, so closing it can hand focus back. */
+  const opener = useRef<string | null>(null);
+  const closeSheet = () => {
+    setSheetOpen(false);
+    const id = opener.current;
+    if (id) requestAnimationFrame(() => document.getElementById(id)?.focus());
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setPick(null);
-        setSheetOpen(false);
+        closeSheet();
       }
     };
     document.addEventListener("keydown", onKey);
@@ -116,7 +124,9 @@ export function EssayView({
     });
   }
 
-  const detail = picked && pick ? <DetailPanel span={picked} pid={pick.pid} trace={pickedTrace} onShowLinked={onShowLinked} /> : null;
+  // Offer the jump only when the linked passage really exists in the essay text.
+  const canJump = !!pickedTrace?.linked && sliceRef({ paragraphs }, pickedTrace.linked) !== null;
+  const detail = picked && pick ? <DetailPanel span={picked} pid={pick.pid} trace={pickedTrace} canJump={canJump} onShowLinked={onShowLinked} /> : null;
 
   return (
     <div>
@@ -177,6 +187,7 @@ export function EssayView({
               const isActive = pick?.pid === p.id && pick.idx === idx;
               const status = spanStatus(s.tone, s.reason, trace?.[spanKey(p.id, s.start, s.end)]).label;
               const open = () => {
+                opener.current = `span-${p.id}-${s.start}-${s.end}`;
                 setPick({ pid: p.id, idx });
                 setSheetOpen(true);
               };
@@ -228,10 +239,10 @@ export function EssayView({
       {/* phone: bottom sheet */}
       {sheetOpen && detail && (
         <div className="no-print fixed inset-x-0 bottom-0 z-30 lg:hidden" role="dialog" aria-label="Why this passage was marked">
-          <button type="button" aria-label="Close" onClick={() => setSheetOpen(false)} className="fixed inset-0 -z-10 bg-black/30" />
+          <button type="button" aria-label="Close" onClick={closeSheet} className="fixed inset-0 -z-10 bg-black/30" />
           <div className="v-sheet max-h-[75dvh] overflow-auto rounded-t-[18px] border border-v-border bg-v-card p-5 pb-8" style={{ boxShadow: "var(--v-elev-3)" }}>
             {detail}
-            <button type="button" onClick={() => setSheetOpen(false)} className="mt-4 min-h-[44px] w-full rounded-full border border-v-border-strong text-sm font-semibold text-v-text">
+            <button type="button" onClick={closeSheet} className="mt-4 min-h-[44px] w-full rounded-full border border-v-border-strong text-sm font-semibold text-v-text">
               Close
             </button>
           </div>
@@ -245,11 +256,13 @@ function DetailPanel({
   span,
   pid,
   trace,
+  canJump,
   onShowLinked,
 }: {
   span: Paragraph["spans"][number];
   pid: string;
   trace?: SpanTrace;
+  canJump: boolean;
   onShowLinked: (both: PassageRef[], target: PassageRef) => void;
 }) {
   const status = spanStatus(span.tone, span.reason, trace).label;
@@ -274,7 +287,7 @@ function DetailPanel({
             ))}
           </ol>
           {sim && <p className="mt-2 font-data text-[12px] text-v-text-muted">{sim}</p>}
-          {trace.linked && (
+          {trace.linked && canJump && (
             <button
               type="button"
               onClick={() => onShowLinked([{ paragraphId: pid, start: span.start, end: span.end }, trace.linked!], trace.linked!)}
