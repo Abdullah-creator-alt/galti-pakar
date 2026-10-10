@@ -11,6 +11,7 @@
     "test:read": "node --env-file-if-exists=.env.local --no-warnings scripts/test-read.ts",
     "build:data": "node --env-file-if-exists=.env.local --no-warnings scripts/build-data.ts",
     "train:genericness": "node --no-warnings scripts/train-genericness.ts",
+    "eval:structure": "node --env-file-if-exists=.env.local --no-warnings scripts/eval-structure.ts",
     "eval:drift": "node --no-warnings scripts/eval-drift.ts",
     "test:genericness": "node --env-file-if-exists=.env.local --no-warnings scripts/test-genericness.ts"
   },
