@@ -82,13 +82,17 @@ Severity is a suggestion for review (`info` to `high`), lowered one level when t
 ## CSS profile (optional)
 
 `input.profile` may be a versioned profile (`profile.ts` schema): documents, criteria, and mappings from diagnostic type
-to criterion ids. It is applied only when `provenance.status === "verified"`; every non-inferred criterion must cite a listed
-document; origins (`official_requirement`, `rubric_excerpt`, `examiner_report_finding`, `inferred_best_practice`) and
-checkability (`machine_checkable`, `requires_judgment`) are kept distinct. Only criteria about organisation, thesis clarity,
-argument relevance, evidence support and counterarguments are attached; others are listed as skipped. An invalid or unverified
-profile is ignored with a warning. **This repo ships no profile.** Official CSS rules, rubric text and FPSC findings must be
-supplied and verified by the product owner; the tests use a clearly marked invented fixture. The HTTP route does not accept
-a profile from clients.
+to criterion ids. It is applied only when `provenance.status === "verified"`. Origins (`official_requirement`,
+`official_guidance`, `rubric_excerpt`, `examiner_report_finding`, `inferred_best_practice`) stay distinct: an official origin must
+cite a listed document that has a URL, plus a page and an exact quotation, and an inferred criterion must not carry an official
+quotation. Assessability is `machine_checkable`, `partially_assessable` or `requires_judgment`. Only criteria about organisation,
+thesis clarity, argument relevance, evidence support and counterarguments are attached; others are listed as skipped. An invalid or
+unverified profile is ignored with a warning and the generic analysis runs unchanged. The profile only adds a `criteria` list to
+findings the engine already produced.
+
+The CSS English Essay profile that ships with the app is `lib/profiles/cssEssay.ts`, documented in `lib/profiles/CSS_PROFILE.md`
+(what it can and cannot assess, which sources were verified, which criteria are official versus inferred). The HTTP route applies
+it server-side and does not accept a profile from clients.
 
 ## Integrating later stages
 

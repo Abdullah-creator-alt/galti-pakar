@@ -10,7 +10,7 @@
  *    as such and are never merged;
  *  - only criteria about organisation, thesis clarity, argument relevance, evidence support and
  *    counterarguments are applied here (see IN_SCOPE_AREAS); others are recorded as skipped.
- * This repository ships no profile: official wording must be supplied and verified by the product owner.
+ * The CSS English Essay profile that ships with the app lives in lib/profiles/cssEssay.ts (see CSS_PROFILE.md there).
  */
 import { z } from "zod";
 import {
@@ -33,6 +33,13 @@ const criterionSchema = z.object({
   checkability: z.enum(PROFILE_CHECKABILITY),
   sourceDocumentId: z.string().min(1).optional(),
   sourceLocator: z.string().optional(),
+  // Registry metadata (optional so older profiles stay valid):
+  description: z.string().min(1).optional(),
+  introducedIn: z.string().min(1).optional(),
+  /** Exact wording from the cited source. Only for criteria that quote an official document. */
+  sourceQuote: z.string().min(1).optional(),
+  /** What this criterion's signal cannot show. */
+  limitations: z.string().min(1).optional(),
 });
 
 export const analysisProfileSchema = z
@@ -42,7 +49,20 @@ export const analysisProfileSchema = z
     provenance: z.object({
       status: z.enum(["verified", "draft"]),
       verifiedBy: z.string().optional(),
-      documents: z.array(z.object({ id: z.string().min(1), title: z.string().min(1), issuer: z.string().optional(), version: z.string().optional() })),
+      documents: z.array(
+        z.object({
+          id: z.string().min(1),
+          title: z.string().min(1),
+          issuer: z.string().optional(),
+          version: z.string().optional(),
+          url: z.string().url().optional(),
+          /** Page where the document is listed. */
+          listedAt: z.string().url().optional(),
+          retrievedOn: z.string().optional(),
+          sha256: z.string().regex(/^[0-9a-f]{64}$/).optional(),
+          notes: z.string().optional(),
+        }),
+      ),
     }),
     criteria: z.array(criterionSchema),
     mappings: z.array(
@@ -61,6 +81,14 @@ export const analysisProfileSchema = z
       critIds.add(c.id);
       if (c.origin !== "inferred_best_practice" && (!c.sourceDocumentId || !docIds.has(c.sourceDocumentId)))
         ctx.addIssue({ code: "custom", path: ["criteria", i, "sourceDocumentId"], message: `${c.origin} criterion must cite a document listed in provenance.documents` });
+      // An official classification must be traceable: a public URL for the document, and where in it the wording is.
+      if (c.origin === "official_requirement" || c.origin === "official_guidance") {
+        const doc = p.provenance.documents.find((d) => d.id === c.sourceDocumentId);
+        if (doc && !doc.url) ctx.addIssue({ code: "custom", path: ["criteria", i, "sourceDocumentId"], message: `${c.origin} criterion needs its document to have a url` });
+        if (!c.sourceLocator) ctx.addIssue({ code: "custom", path: ["criteria", i, "sourceLocator"], message: `${c.origin} criterion needs a sourceLocator (page or section)` });
+        if (!c.sourceQuote) ctx.addIssue({ code: "custom", path: ["criteria", i, "sourceQuote"], message: `${c.origin} criterion needs the quoted source wording` });
+      }
+      if (c.origin === "inferred_best_practice" && c.sourceQuote) ctx.addIssue({ code: "custom", path: ["criteria", i, "sourceQuote"], message: "an inferred best practice must not carry an official quotation" });
     });
     p.mappings.forEach((m, i) =>
       m.criterionIds.forEach((cid) => {
@@ -109,6 +137,7 @@ export function applyProfile(findings: StructuralFinding[], profile: AnalysisPro
           origin: c.origin,
           checkability: c.checkability,
           explanation: m.explanation,
+          ...(c.limitations ? { limitations: c.limitations } : {}),
           ...(c.sourceDocumentId ? { sourceDocumentId: c.sourceDocumentId } : {}),
           ...(c.sourceLocator ? { sourceLocator: c.sourceLocator } : {}),
         });

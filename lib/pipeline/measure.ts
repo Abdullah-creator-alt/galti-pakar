@@ -6,6 +6,7 @@
  * still contribute. Nothing here throws for a stage failure.
  */
 import { EMBED_TEXT_BUDGET, MEASURE_STAGE_TIMEOUT_MS } from "../config.ts";
+import { CSS_ESSAY_PROFILE } from "../profiles/cssEssay.ts";
 import { analyzeEssayStructure, type StructureAnalysis, type StructureAnalysisInput, type StructureOutcome } from "../structure/index.ts";
 import { analyseGenericnessAndDrift, type AnalyseDeps, type EssayAnalysis } from "./analyse.ts";
 import { benchmarkEssay, type BenchmarkDeps, type BenchmarkInput } from "./benchmark.ts";
@@ -31,6 +32,12 @@ export interface MeasureDeps {
   analyse?: (topic: string, paragraphs: { id: string; text: string }[], deps: AnalyseDeps) => Promise<EssayAnalysis>;
   benchmark?: (input: BenchmarkInput, deps: BenchmarkDeps) => Promise<BenchmarkResult>;
   timeoutsMs?: Partial<Record<"structure" | "analysis" | "benchmark", number>>;
+  /**
+   * CSS analysis profile handed to the structure stage. Omitted: the shipped CSS English Essay profile is used.
+   * `null`: no profile, so the generic structural analysis runs unchanged. The profile only attaches criterion
+   * labels to findings the generic engine already produced.
+   */
+  profile?: unknown;
 }
 
 export interface MeasureResult {
@@ -89,7 +96,8 @@ export async function measureEssay(essay: TranscribedEssay, topic: string, deps:
 
   const [structure, analysis, benchmark] = await Promise.all([
     runStage("Structure analysis", limits.structure, async () => {
-      const outcome = await structureFn({ text: structureInputText(paragraphs), topic }); // semantic mode stays off: no embedding cost
+      const profile = deps.profile === undefined ? CSS_ESSAY_PROFILE : deps.profile ?? undefined;
+      const outcome = await structureFn({ text: structureInputText(paragraphs), topic, ...(profile ? { profile } : {}) }); // semantic mode stays off: no embedding cost
       if (!outcome.ok) throw new Error(`${outcome.error.code}: ${outcome.error.message}`);
       return outcome.result;
     }),

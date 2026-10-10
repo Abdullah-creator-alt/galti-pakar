@@ -111,6 +111,8 @@ export interface AttachedCriterion {
   origin: ProfileCriterionOrigin;
   checkability: ProfileCheckability;
   explanation: string;
+  /** Criterion-level interpretive notes: what the signal cannot show. */
+  limitations?: string;
   sourceDocumentId?: string;
   sourceLocator?: string;
 }
@@ -242,8 +244,9 @@ export const IN_SCOPE_AREAS: readonly ProfileCriterionArea[] = [
   "counterargument",
 ];
 
-export const PROFILE_CRITERION_ORIGINS = ["official_requirement", "rubric_excerpt", "examiner_report_finding", "inferred_best_practice"] as const;
+export const PROFILE_CRITERION_ORIGINS = ["official_requirement", "official_guidance", "rubric_excerpt", "examiner_report_finding", "inferred_best_practice"] as const;
 export type ProfileCriterionOrigin = (typeof PROFILE_CRITERION_ORIGINS)[number];
 
-export const PROFILE_CHECKABILITY = ["machine_checkable", "requires_judgment"] as const;
+/** machine_checkable: a deterministic rule decides. partially_assessable: a diagnostic gives a weak or model-dependent signal. requires_judgment: no diagnostic maps to it. */
+export const PROFILE_CHECKABILITY = ["machine_checkable", "partially_assessable", "requires_judgment"] as const;
 export type ProfileCheckability = (typeof PROFILE_CHECKABILITY)[number];

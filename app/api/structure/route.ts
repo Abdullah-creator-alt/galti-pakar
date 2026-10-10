@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { analyzeEssayStructure, type StructureFailureCode } from "@/lib/structure";
 import { embedTexts } from "@/lib/pipeline/embed";
+import { CSS_ESSAY_PROFILE } from "@/lib/profiles/cssEssay";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -28,7 +29,8 @@ export async function POST(req: Request) {
   const { text, topic, useSemanticSimilarity } = (body ?? {}) as Record<string, unknown>;
   try {
     const outcome = await analyzeEssayStructure(
-      { text: text as string, topic: typeof topic === "string" ? topic : undefined, useSemanticSimilarity: useSemanticSimilarity === true },
+      // The profile is server-side configuration, never taken from the request body.
+      { text: text as string, topic: typeof topic === "string" ? topic : undefined, useSemanticSimilarity: useSemanticSimilarity === true, profile: CSS_ESSAY_PROFILE },
       { embed: (texts) => embedTexts(texts) },
     );
     if (outcome.ok) return NextResponse.json(outcome.result);

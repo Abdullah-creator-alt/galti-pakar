@@ -56,6 +56,7 @@ const criterionSchema = z.object({
   origin: z.enum(PROFILE_CRITERION_ORIGINS),
   checkability: z.enum(PROFILE_CHECKABILITY),
   explanation: z.string(),
+  limitations: z.string().optional(),
   sourceDocumentId: z.string().optional(),
   sourceLocator: z.string().optional(),
 });

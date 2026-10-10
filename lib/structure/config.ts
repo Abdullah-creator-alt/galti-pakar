@@ -2,8 +2,8 @@
  * Tunable constants for the structure-analysis module. Every threshold here is a heuristic,
  * not a calibrated probability; re-tune against real essays. See README.md for what each means.
  */
-/** 1.2.0: `relevant_to` may also come from evidence. 1.1.0: additive. `supports` may target rebuttals and counterclaims; metadata gains `confidenceCalibration`. */
-export const STRUCTURE_SCHEMA_VERSION = "1.2.0";
+/** 1.3.0: additive. Profile criteria gain `official_guidance` origin, `partially_assessable` checkability and optional `limitations`. 1.2.0: `relevant_to` may also come from evidence. 1.1.0: additive. `supports` may target rebuttals and counterclaims; metadata gains `confidenceCalibration`. */
+export const STRUCTURE_SCHEMA_VERSION = "1.3.0";
 
 export const STRUCTURE_LIMITS = {
   maxChars: 40_000,
