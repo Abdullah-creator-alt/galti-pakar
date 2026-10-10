@@ -1,0 +1,1509 @@
+{
+ "topic": "Climate change and Pakistan's economic future",
+ "essay": {
+  "outline": [
+   "Intro: climate emergency",
+   "Agriculture and wheat",
+   "Floods and finance",
+   "Energy and solar",
+   "Conclusion"
+  ],
+  "paragraphs": [
+   {
+    "id": "p1",
+    "kind": "intro",
+    "text": "Pakistan faces a growing climate emergency. This essay argues that spending on adaptation is the central economic question of the decade.",
+    "pageIndex": 0
+   },
+   {
+    "id": "p2",
+    "kind": "body",
+    "text": "Agriculture is the first sector hit by warming. Wheat yields in Punjab fell by about ten percent after the 2022 heatwave, according to the Economic Survey. Heat also shortens the wheat sowing window.",
+    "pageIndex": 0
+   },
+   {
+    "id": "p3",
+    "kind": "body",
+    "text": "Floods have damaged public finances badly. Many people agree with this view.",
+    "pageIndex": 0
+   },
+   {
+    "id": "p4",
+    "kind": "body",
+    "text": "Some argue that development must come before adaptation spending. This is a common opinion in many countries.",
+    "pageIndex": 0
+   },
+   {
+    "id": "p5",
+    "kind": "body",
+    "text": "Education has been neglected for decades in Pakistan and the problem keeps growing. Teachers are underpaid and syllabi are outdated in most public schools across the country. Many schools lack basic facilities such as classrooms, desks and clean drinking water.",
+    "pageIndex": 0
+   },
+   {
+    "id": "p6",
+    "kind": "body",
+    "text": "Throughout history great nations have risen through unity and hard work. Every society faces challenges and Pakistan is no different. Where there is a will there is a way.",
+    "pageIndex": 0
+   },
+   {
+    "id": "p7",
+    "kind": "body",
+    "text": "Solar power can cut the fuel import bill. Pakistan spent about 17 billion dollars on fuel imports in 2022, according to the State Bank of Pakistan.",
+    "pageIndex": 0
+   },
+   {
+    "id": "p8",
+    "kind": "conclusion",
+    "text": "In conclusion, spending on adaptation protects growth. The time to act is now.",
+    "pageIndex": 0
+   }
+  ],
+  "uncertain": [],
+  "legibility": "good",
+  "warnings": [],
+  "wordCount": 191
+ },
+ "sentences": [
+  {
+   "id": "p1-s1",
+   "paragraphId": "p1",
+   "start": 0,
+   "end": 43,
+   "text": "Pakistan faces a growing climate emergency.",
+   "vec": [
+    0.0041,
+    -0.0012,
+    -0.0019,
+    0.0048,
+    -0.0073,
+    0.009,
+    0.9998,
+    0.01,
+    -0.009,
+    0.0073,
+    -0.0048,
+    0.0019
+   ]
+  },
+  {
+   "id": "p1-s2",
+   "paragraphId": "p1",
+   "start": 44,
+   "end": 137,
+   "text": "This essay argues that spending on adaptation is the central economic question of the decade.",
+   "vec": [
+    0.0072,
+    -0.005,
+    0.2915,
+    0.0007,
+    -0.0036,
+    0.0061,
+    0.9563,
+    0.0093,
+    -0.0096,
+    0.0091,
+    -0.0077,
+    0.0056
+   ]
+  },
+  {
+   "id": "p2-s1",
+   "paragraphId": "p2",
+   "start": 0,
+   "end": 47,
+   "text": "Agriculture is the first sector hit by warming.",
+   "vec": [
+    0.9997,
+    -0.0081,
+    0.006,
+    -0.0034,
+    0.0004,
+    0.0026,
+    -0.0053,
+    0.0076,
+    -0.0092,
+    0.0099,
+    -0.0096,
+    0.0085
+   ]
+  },
+  {
+   "id": "p2-s2",
+   "paragraphId": "p2",
+   "start": 48,
+   "end": 155,
+   "text": "Wheat yields in Punjab fell by about ten percent after the 2022 heatwave, according to the Economic Survey.",
+   "vec": [
+    0.9997,
+    -0.0097,
+    0.0087,
+    -0.0069,
+    0.0045,
+    -0.0016,
+    -0.0015,
+    0.0043,
+    -0.0068,
+    0.0087,
+    -0.0097,
+    0.0098
+   ]
+  },
+  {
+   "id": "p2-s3",
+   "paragraphId": "p2",
+   "start": 156,
+   "end": 199,
+   "text": "Heat also shortens the wheat sowing window.",
+   "vec": [
+    0.7846,
+    -0.0076,
+    0.0078,
+    -0.0072,
+    0.006,
+    -0.0043,
+    0.0021,
+    0.0002,
+    0.6198,
+    0.0047,
+    -0.0063,
+    0.0074
+   ]
+  },
+  {
+   "id": "p3-s1",
+   "paragraphId": "p3",
+   "start": 0,
+   "end": 42,
+   "text": "Floods have damaged public finances badly.",
+   "vec": [
+    0.0057,
+    0.9997,
+    0.0094,
+    -0.0101,
+    0.0097,
+    -0.0085,
+    0.0065,
+    -0.0039,
+    0.0009,
+    0.0022,
+    -0.0051,
+    0.0075
+   ]
+  },
+  {
+   "id": "p3-s2",
+   "paragraphId": "p3",
+   "start": 43,
+   "end": 76,
+   "text": "Many people agree with this view.",
+   "vec": [
+    0.0017,
+    -0.0046,
+    0.007,
+    -0.0088,
+    0.9998,
+    -0.0098,
+    0.0089,
+    -0.0072,
+    0.0048,
+    -0.002,
+    -0.001,
+    0.004
+   ]
+  },
+  {
+   "id": "p4-s1",
+   "paragraphId": "p4",
+   "start": 0,
+   "end": 65,
+   "text": "Some argue that development must come before adaptation spending.",
+   "vec": [
+    -0.0024,
+    -0.0006,
+    0.9997,
+    -0.0062,
+    0.0083,
+    -0.0096,
+    0.01,
+    -0.0094,
+    0.008,
+    -0.0058,
+    0.0031,
+    -0.0001
+   ]
+  },
+  {
+   "id": "p4-s2",
+   "paragraphId": "p4",
+   "start": 66,
+   "end": 109,
+   "text": "This is a common opinion in many countries.",
+   "vec": [
+    -0.0062,
+    0.0035,
+    -0.0006,
+    -0.0025,
+    0.9997,
+    -0.0076,
+    0.0092,
+    -0.0099,
+    0.0097,
+    -0.0086,
+    0.0067,
+    -0.0042
+   ]
+  },
+  {
+   "id": "p5-s1",
+   "paragraphId": "p5",
+   "start": 0,
+   "end": 83,
+   "text": "Education has been neglected for decades in Pakistan and the problem keeps growing.",
+   "vec": [
+    -0.0089,
+    0.0071,
+    -0.0046,
+    0.9997,
+    0.0013,
+    -0.0043,
+    0.0068,
+    -0.0087,
+    0.0098,
+    -0.0099,
+    0.0092,
+    -0.0076
+   ]
+  },
+  {
+   "id": "p5-s2",
+   "paragraphId": "p5",
+   "start": 84,
+   "end": 174,
+   "text": "Teachers are underpaid and syllabi are outdated in most public schools across the country.",
+   "vec": [
+    -0.0099,
+    0.0093,
+    -0.0078,
+    0.9997,
+    -0.0028,
+    -0.0002,
+    0.0032,
+    -0.0059,
+    0.008,
+    -0.0094,
+    0.0099,
+    -0.0095
+   ]
+  },
+  {
+   "id": "p5-s3",
+   "paragraphId": "p5",
+   "start": 175,
+   "end": 261,
+   "text": "Many schools lack basic facilities such as classrooms, desks and clean drinking water.",
+   "vec": [
+    -0.0092,
+    0.0099,
+    -0.0096,
+    0.9997,
+    -0.0065,
+    0.0039,
+    -0.001,
+    -0.002,
+    0.0049,
+    -0.0073,
+    0.009,
+    -0.0098
+   ]
+  },
+  {
+   "id": "p6-s1",
+   "paragraphId": "p6",
+   "start": 0,
+   "end": 72,
+   "text": "Throughout history great nations have risen through unity and hard work.",
+   "vec": [
+    -0.0071,
+    0.0089,
+    -0.0099,
+    0.01,
+    0.9997,
+    0.0074,
+    -0.005,
+    0.0022,
+    0.0009,
+    -0.0039,
+    0.0065,
+    -0.0086
+   ]
+  },
+  {
+   "id": "p6-s2",
+   "paragraphId": "p6",
+   "start": 73,
+   "end": 133,
+   "text": "Every society faces challenges and Pakistan is no different.",
+   "vec": [
+    -0.0035,
+    0.0062,
+    -0.0083,
+    0.0097,
+    0.9998,
+    0.0096,
+    -0.0082,
+    0.006,
+    -0.0033,
+    0.0003,
+    0.0028,
+    -0.0056
+   ]
+  },
+  {
+   "id": "p6-s3",
+   "paragraphId": "p6",
+   "start": 134,
+   "end": 171,
+   "text": "Where there is a will there is a way.",
+   "vec": [
+    0.0007,
+    0.0024,
+    -0.0052,
+    0.0076,
+    0.9998,
+    0.01,
+    -0.0099,
+    0.0088,
+    -0.0069,
+    0.0044,
+    -0.0014,
+    -0.0017
+   ]
+  },
+  {
+   "id": "p7-s1",
+   "paragraphId": "p7",
+   "start": 0,
+   "end": 41,
+   "text": "Solar power can cut the fuel import bill.",
+   "vec": [
+    0.0047,
+    -0.0018,
+    -0.0012,
+    0.0041,
+    -0.0067,
+    0.9998,
+    -0.0097,
+    0.0099,
+    -0.0092,
+    0.0076,
+    -0.0053,
+    0.0025
+   ]
+  },
+  {
+   "id": "p7-s2",
+   "paragraphId": "p7",
+   "start": 42,
+   "end": 147,
+   "text": "Pakistan spent about 17 billion dollars on fuel imports in 2022, according to the State Bank of Pakistan.",
+   "vec": [
+    0.0079,
+    -0.0057,
+    0.003,
+    0.0001,
+    -0.0031,
+    0.9997,
+    -0.0079,
+    0.0094,
+    -0.0099,
+    0.0096,
+    -0.0083,
+    0.0063
+   ]
+  },
+  {
+   "id": "p8-s1",
+   "paragraphId": "p8",
+   "start": 0,
+   "end": 54,
+   "text": "In conclusion, spending on adaptation protects growth.",
+   "vec": [
+    0.0097,
+    -0.0085,
+    0.0066,
+    -0.004,
+    0.0011,
+    0.0019,
+    -0.0048,
+    0.9997,
+    -0.0089,
+    0.0098,
+    -0.0098,
+    0.0089
+   ]
+  },
+  {
+   "id": "p8-s2",
+   "paragraphId": "p8",
+   "start": 55,
+   "end": 78,
+   "text": "The time to act is now.",
+   "vec": [
+    0.0098,
+    -0.0099,
+    0.0091,
+    -0.0074,
+    0.9997,
+    -0.0022,
+    -0.0008,
+    0.0037,
+    -0.0064,
+    0.0084,
+    -0.0096,
+    0.0099
+   ]
+  }
+ ],
+ "structure": {
+  "labelAgreementRate": 0.82,
+  "sentences": [
+   {
+    "sentenceId": "p1-s1",
+    "label": "Lead",
+    "source": "llm",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p1-s2",
+    "label": "Position",
+    "source": "consensus",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p2-s1",
+    "label": "Claim",
+    "source": "consensus",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p2-s2",
+    "label": "Evidence",
+    "source": "llm",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p2-s3",
+    "label": "Claim",
+    "source": "consensus",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p3-s1",
+    "label": "Claim",
+    "source": "llm",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p4-s1",
+    "label": "Counterclaim",
+    "source": "consensus",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p5-s1",
+    "label": "Claim",
+    "source": "llm",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p7-s1",
+    "label": "Claim",
+    "source": "llm",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p7-s2",
+    "label": "Evidence",
+    "source": "consensus",
+    "confidence": 0.8
+   },
+   {
+    "sentenceId": "p8-s1",
+    "label": "Conclusion",
+    "source": "consensus",
+    "confidence": 0.8
+   }
+  ]
+ },
+ "analysis": {
+  "paragraphs": [
+   {
+    "id": "p1",
+    "relevance": 96,
+    "rawSimilarity": 0.8,
+    "driftFlag": false,
+    "avgGenericScore": 0.475,
+    "sentences": [
+     {
+      "start": 0,
+      "end": 43,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 44,
+      "end": 137,
+      "genericScore": 0.45,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     }
+    ]
+   },
+   {
+    "id": "p2",
+    "relevance": 97,
+    "rawSimilarity": 0.8,
+    "driftFlag": false,
+    "avgGenericScore": 0.35000000000000003,
+    "sentences": [
+     {
+      "start": 0,
+      "end": 47,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 48,
+      "end": 155,
+      "genericScore": 0.05,
+      "level": "specific",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 156,
+      "end": 199,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     }
+    ]
+   },
+   {
+    "id": "p3",
+    "relevance": 95,
+    "rawSimilarity": 0.8,
+    "driftFlag": false,
+    "avgGenericScore": 0.65,
+    "sentences": [
+     {
+      "start": 0,
+      "end": 42,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 43,
+      "end": 76,
+      "genericScore": 0.8,
+      "level": "generic",
+      "signals": null,
+      "reasonCodes": [
+       "no concrete detail"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "p4",
+    "relevance": 94,
+    "rawSimilarity": 0.8,
+    "driftFlag": false,
+    "avgGenericScore": 0.6,
+    "sentences": [
+     {
+      "start": 0,
+      "end": 65,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 66,
+      "end": 109,
+      "genericScore": 0.7,
+      "level": "generic",
+      "signals": null,
+      "reasonCodes": [
+       "no concrete detail"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "p5",
+    "relevance": 38,
+    "rawSimilarity": 0.8,
+    "driftFlag": true,
+    "avgGenericScore": 0.5,
+    "sentences": [
+     {
+      "start": 0,
+      "end": 83,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 84,
+      "end": 174,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 175,
+      "end": 261,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     }
+    ]
+   },
+   {
+    "id": "p6",
+    "relevance": 91,
+    "rawSimilarity": 0.8,
+    "driftFlag": false,
+    "avgGenericScore": 0.9400000000000001,
+    "sentences": [
+     {
+      "start": 0,
+      "end": 72,
+      "genericScore": 0.95,
+      "level": "generic",
+      "signals": null,
+      "reasonCodes": [
+       "no concrete detail"
+      ]
+     },
+     {
+      "start": 73,
+      "end": 133,
+      "genericScore": 0.9,
+      "level": "generic",
+      "signals": null,
+      "reasonCodes": [
+       "no concrete detail"
+      ]
+     },
+     {
+      "start": 134,
+      "end": 171,
+      "genericScore": 0.97,
+      "level": "generic",
+      "signals": null,
+      "reasonCodes": [
+       "no concrete detail"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "p7",
+    "relevance": 96,
+    "rawSimilarity": 0.8,
+    "driftFlag": false,
+    "avgGenericScore": 0.29,
+    "sentences": [
+     {
+      "start": 0,
+      "end": 41,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 42,
+      "end": 147,
+      "genericScore": 0.08,
+      "level": "specific",
+      "signals": null,
+      "reasonCodes": []
+     }
+    ]
+   },
+   {
+    "id": "p8",
+    "relevance": 97,
+    "rawSimilarity": 0.8,
+    "driftFlag": false,
+    "avgGenericScore": 0.675,
+    "sentences": [
+     {
+      "start": 0,
+      "end": 54,
+      "genericScore": 0.5,
+      "level": "mixed",
+      "signals": null,
+      "reasonCodes": []
+     },
+     {
+      "start": 55,
+      "end": 78,
+      "genericScore": 0.85,
+      "level": "generic",
+      "signals": null,
+      "reasonCodes": [
+       "no concrete detail"
+      ]
+     }
+    ]
+   }
+  ],
+  "genericShare": 0.3157894736842105,
+  "specificityPer100Words": 4.2,
+  "driftingParagraphIds": [
+   "p5"
+  ],
+  "embedTextCount": 0,
+  "unassessedSentences": 0
+ },
+ "examiner": {
+  "runs": [
+   {
+    "index": 1,
+    "model": "fixture",
+    "dimensions": {
+     "thesis": {
+      "key": "thesis",
+      "score": 7.5,
+      "band": "competitive",
+      "reason": "Clear position stated early.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "spending on adaptation is the central economic question of the decade",
+        "paragraphId": "p1",
+        "start": 67,
+        "end": 136
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "outline": {
+      "key": "outline",
+      "score": 6,
+      "band": "borderline",
+      "reason": "Outline matches most of the essay.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "Agriculture and wheat",
+        "paragraphId": "outline",
+        "start": 25,
+        "end": 46
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "argument": {
+      "key": "argument",
+      "score": 7,
+      "band": "competitive",
+      "reason": "Claims connect to the position.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "Agriculture is the first sector hit by warming",
+        "paragraphId": "p2",
+        "start": 0,
+        "end": 46
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "evidence": {
+      "key": "evidence",
+      "score": 8,
+      "band": "competitive",
+      "reason": "Specific figures in two paragraphs.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "Wheat yields in Punjab fell by about ten percent",
+        "paragraphId": "p2",
+        "start": 48,
+        "end": 96
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "counter-argument": {
+      "key": "counter-argument",
+      "score": 5,
+      "band": "borderline",
+      "reason": "Opposing view raised, not answered.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "development must come before adaptation spending",
+        "paragraphId": "p4",
+        "start": 16,
+        "end": 64
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "coherence": {
+      "key": "coherence",
+      "score": 7.5,
+      "band": "competitive",
+      "reason": "Transitions are mostly clear.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "In conclusion, spending on adaptation protects growth",
+        "paragraphId": "p8",
+        "start": 0,
+        "end": 53
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "language": {
+      "key": "language",
+      "score": 6.5,
+      "band": "borderline",
+      "reason": "Clear but with stock phrasing.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "Throughout history great nations have risen through unity and hard work",
+        "paragraphId": "p6",
+        "start": 0,
+        "end": 71
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     }
+    }
+   },
+   {
+    "index": 2,
+    "model": "fixture",
+    "dimensions": {
+     "thesis": {
+      "key": "thesis",
+      "score": 7.5,
+      "band": "competitive",
+      "reason": "The thesis is explicit.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "This essay argues that spending on adaptation",
+        "paragraphId": "p1",
+        "start": 44,
+        "end": 89
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "outline": {
+      "key": "outline",
+      "score": 6.5,
+      "band": "borderline",
+      "reason": "Outline is brief but relevant.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "Floods and finance",
+        "paragraphId": "outline",
+        "start": 47,
+        "end": 65
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "argument": {
+      "key": "argument",
+      "score": 7,
+      "band": "competitive",
+      "reason": "Reasoned claims.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "Solar power can cut the fuel import bill",
+        "paragraphId": "p7",
+        "start": 0,
+        "end": 40
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "evidence": {
+      "key": "evidence",
+      "score": 8.5,
+      "band": "competitive",
+      "reason": "Good use of sources.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "17 billion dollars on fuel imports in 2022",
+        "paragraphId": "p7",
+        "start": 63,
+        "end": 105
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "counter-argument": {
+      "key": "counter-argument",
+      "score": 5.5,
+      "band": "borderline",
+      "reason": "A counterclaim appears.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "Some argue that development",
+        "paragraphId": "p4",
+        "start": 0,
+        "end": 27
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "coherence": {
+      "key": "coherence",
+      "score": 7,
+      "band": "competitive",
+      "reason": "Reads as one line of thought.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "The time to act is now",
+        "paragraphId": "p8",
+        "start": 55,
+        "end": 77
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     },
+     "language": {
+      "key": "language",
+      "score": 7,
+      "band": "competitive",
+      "reason": "Controlled language.",
+      "absence": false,
+      "quotesProposed": 1,
+      "verifiedQuotes": [
+       {
+        "text": "Every society faces challenges",
+        "paragraphId": "p6",
+        "start": 73,
+        "end": 103
+       }
+      ],
+      "quotesRejected": 0,
+      "unverified": false,
+      "conflict": false,
+      "confidence": "high"
+     }
+    }
+   }
+  ],
+  "dimensions": [
+   {
+    "key": "thesis",
+    "label": "Thesis",
+    "medianScore": 7.5,
+    "band": "competitive",
+    "scores": [
+     7.5,
+     7.5
+    ],
+    "runsAgree": true,
+    "reasons": [
+     "Clear position stated early.",
+     "The thesis is explicit."
+    ],
+    "disagreements": [],
+    "verifiedQuotes": [
+     {
+      "text": "spending on adaptation is the central economic question of the decade",
+      "paragraphId": "p1",
+      "start": 67,
+      "end": 136
+     },
+     {
+      "text": "This essay argues that spending on adaptation",
+      "paragraphId": "p1",
+      "start": 44,
+      "end": 89
+     }
+    ],
+    "flags": {
+     "unverified": false,
+     "conflict": false,
+     "runsDisagree": false
+    },
+    "confidence": "high"
+   },
+   {
+    "key": "outline",
+    "label": "Outline",
+    "medianScore": 6.5,
+    "band": "borderline",
+    "scores": [
+     6,
+     6.5
+    ],
+    "runsAgree": true,
+    "reasons": [
+     "Outline matches most of the essay.",
+     "Outline is brief but relevant."
+    ],
+    "disagreements": [],
+    "verifiedQuotes": [
+     {
+      "text": "Agriculture and wheat",
+      "paragraphId": "outline",
+      "start": 25,
+      "end": 46
+     },
+     {
+      "text": "Floods and finance",
+      "paragraphId": "outline",
+      "start": 47,
+      "end": 65
+     }
+    ],
+    "flags": {
+     "unverified": false,
+     "conflict": false,
+     "runsDisagree": false
+    },
+    "confidence": "high"
+   },
+   {
+    "key": "argument",
+    "label": "Argument",
+    "medianScore": 7,
+    "band": "competitive",
+    "scores": [
+     7,
+     7
+    ],
+    "runsAgree": true,
+    "reasons": [
+     "Claims connect to the position.",
+     "Reasoned claims."
+    ],
+    "disagreements": [],
+    "verifiedQuotes": [
+     {
+      "text": "Agriculture is the first sector hit by warming",
+      "paragraphId": "p2",
+      "start": 0,
+      "end": 46
+     },
+     {
+      "text": "Solar power can cut the fuel import bill",
+      "paragraphId": "p7",
+      "start": 0,
+      "end": 40
+     }
+    ],
+    "flags": {
+     "unverified": false,
+     "conflict": false,
+     "runsDisagree": false
+    },
+    "confidence": "high"
+   },
+   {
+    "key": "evidence",
+    "label": "Evidence",
+    "medianScore": 8.5,
+    "band": "competitive",
+    "scores": [
+     8,
+     8.5
+    ],
+    "runsAgree": true,
+    "reasons": [
+     "Specific figures in two paragraphs.",
+     "Good use of sources."
+    ],
+    "disagreements": [],
+    "verifiedQuotes": [
+     {
+      "text": "Wheat yields in Punjab fell by about ten percent",
+      "paragraphId": "p2",
+      "start": 48,
+      "end": 96
+     },
+     {
+      "text": "17 billion dollars on fuel imports in 2022",
+      "paragraphId": "p7",
+      "start": 63,
+      "end": 105
+     }
+    ],
+    "flags": {
+     "unverified": false,
+     "conflict": false,
+     "runsDisagree": false
+    },
+    "confidence": "high"
+   },
+   {
+    "key": "counter-argument",
+    "label": "Counter-argument",
+    "medianScore": 5.5,
+    "band": "borderline",
+    "scores": [
+     5,
+     5.5
+    ],
+    "runsAgree": true,
+    "reasons": [
+     "Opposing view raised, not answered.",
+     "A counterclaim appears."
+    ],
+    "disagreements": [],
+    "verifiedQuotes": [
+     {
+      "text": "development must come before adaptation spending",
+      "paragraphId": "p4",
+      "start": 16,
+      "end": 64
+     },
+     {
+      "text": "Some argue that development",
+      "paragraphId": "p4",
+      "start": 0,
+      "end": 27
+     }
+    ],
+    "flags": {
+     "unverified": false,
+     "conflict": false,
+     "runsDisagree": false
+    },
+    "confidence": "high"
+   },
+   {
+    "key": "coherence",
+    "label": "Coherence",
+    "medianScore": 7.5,
+    "band": "competitive",
+    "scores": [
+     7.5,
+     7
+    ],
+    "runsAgree": true,
+    "reasons": [
+     "Transitions are mostly clear.",
+     "Reads as one line of thought."
+    ],
+    "disagreements": [],
+    "verifiedQuotes": [
+     {
+      "text": "In conclusion, spending on adaptation protects growth",
+      "paragraphId": "p8",
+      "start": 0,
+      "end": 53
+     },
+     {
+      "text": "The time to act is now",
+      "paragraphId": "p8",
+      "start": 55,
+      "end": 77
+     }
+    ],
+    "flags": {
+     "unverified": false,
+     "conflict": false,
+     "runsDisagree": false
+    },
+    "confidence": "high"
+   },
+   {
+    "key": "language",
+    "label": "Language",
+    "medianScore": 7,
+    "band": "competitive",
+    "scores": [
+     6.5,
+     7
+    ],
+    "runsAgree": true,
+    "reasons": [
+     "Clear but with stock phrasing.",
+     "Controlled language."
+    ],
+    "disagreements": [],
+    "verifiedQuotes": [
+     {
+      "text": "Throughout history great nations have risen through unity and hard work",
+      "paragraphId": "p6",
+      "start": 0,
+      "end": 71
+     },
+     {
+      "text": "Every society faces challenges",
+      "paragraphId": "p6",
+      "start": 73,
+      "end": 103
+     }
+    ],
+    "flags": {
+     "unverified": false,
+     "conflict": false,
+     "runsDisagree": false
+    },
+    "confidence": "high"
+   }
+  ],
+  "medianDimensions": [
+   {
+    "key": "thesis",
+    "label": "Thesis",
+    "score": 7.5,
+    "outOf": 10,
+    "band": "competitive",
+    "note": "Clear position stated early."
+   },
+   {
+    "key": "outline",
+    "label": "Outline",
+    "score": 6.5,
+    "outOf": 10,
+    "band": "borderline",
+    "note": "Outline matches most of the essay."
+   },
+   {
+    "key": "argument",
+    "label": "Argument",
+    "score": 7,
+    "outOf": 10,
+    "band": "competitive",
+    "note": "Claims connect to the position."
+   },
+   {
+    "key": "evidence",
+    "label": "Evidence",
+    "score": 8.5,
+    "outOf": 10,
+    "band": "competitive",
+    "note": "Specific figures in two paragraphs."
+   },
+   {
+    "key": "counter-argument",
+    "label": "Counter-argument",
+    "score": 5.5,
+    "outOf": 10,
+    "band": "borderline",
+    "note": "Opposing view raised, not answered."
+   },
+   {
+    "key": "coherence",
+    "label": "Coherence",
+    "score": 7.5,
+    "outOf": 10,
+    "band": "competitive",
+    "note": "Transitions are mostly clear."
+   },
+   {
+    "key": "language",
+    "label": "Language",
+    "score": 7,
+    "outOf": 10,
+    "band": "competitive",
+    "note": "Clear but with stock phrasing."
+   }
+  ],
+  "examiners": [
+   {
+    "id": "ai-run-1",
+    "label": "AI run 1",
+    "overall": 6.8,
+    "band": "competitive",
+    "dimensions": {
+     "thesis": "competitive",
+     "outline": "borderline",
+     "argument": "competitive",
+     "evidence": "competitive",
+     "counter-argument": "borderline",
+     "coherence": "competitive",
+     "language": "borderline"
+    }
+   },
+   {
+    "id": "ai-run-2",
+    "label": "AI run 2",
+    "overall": 7,
+    "band": "competitive",
+    "dimensions": {
+     "thesis": "competitive",
+     "outline": "borderline",
+     "argument": "competitive",
+     "evidence": "competitive",
+     "counter-argument": "borderline",
+     "coherence": "competitive",
+     "language": "competitive"
+    }
+   }
+  ],
+  "agreement": {
+   "agreedCount": 7,
+   "total": 7,
+   "disagreeingDimensions": []
+  },
+  "quotesProposed": 14,
+  "quotesVerified": 14,
+  "quotesRejected": 0,
+  "unverifiedDimensions": [],
+  "conflicts": [],
+  "warnings": [],
+  "elapsedMs": 0
+ },
+ "outlineVecs": [
+  [
+   -0.0099,
+   0.0093,
+   -0.0077,
+   0.0055,
+   -0.0027,
+   -0.0003,
+   0.9997,
+   -0.006,
+   0.0081,
+   -0.0095,
+   0.01,
+   -0.0095
+  ],
+  [
+   0.9997,
+   0.0101,
+   -0.0098,
+   0.0085,
+   -0.0065,
+   0.0039,
+   -0.0009,
+   -0.0022,
+   0.0051,
+   -0.0075,
+   0.0092,
+   -0.01
+  ],
+  [
+   -0.0071,
+   0.9997,
+   -0.0098,
+   0.0098,
+   -0.0089,
+   0.0072,
+   -0.0048,
+   0.002,
+   0.001,
+   -0.004,
+   0.0065,
+   -0.0085
+  ],
+  [
+   -0.0036,
+   0.0062,
+   -0.0082,
+   0.0095,
+   -0.0099,
+   0.9998,
+   -0.0079,
+   0.0058,
+   -0.0031,
+   0.0001,
+   0.0029,
+   -0.0056
+  ],
+  [
+   0.0005,
+   0.0025,
+   -0.0053,
+   0.0076,
+   -0.0091,
+   0.0099,
+   -0.0097,
+   0.9998,
+   -0.0067,
+   0.0042,
+   -0.0013,
+   -0.0018
+  ]
+ ]
+}

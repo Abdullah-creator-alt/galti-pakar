@@ -178,3 +178,32 @@ h1, h2, h3, h4, .v-display { letter-spacing: -0.02em; }
   .v-reveal, .v-reveal-left, .v-reveal-scale { opacity: 1 !important; transform: none !important; }
   .hl { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ---- X-Ray additions: tooltips, uncertain words, slots, passage flash ---- */
+.tip { position: relative; }
+.tip[data-tip]:hover::after, .tip[data-tip]:focus-visible::after {
+  content: attr(data-tip);
+  position: absolute; left: 0; bottom: calc(100% + 6px); z-index: 25;
+  width: max-content; max-width: 240px; padding: 6px 10px; border-radius: 8px;
+  background: var(--v-card); color: var(--v-text); border: 1px solid var(--v-border-strong);
+  box-shadow: var(--v-elev-3); font-size: 12.5px; font-weight: 500; line-height: 1.35; white-space: normal;
+}
+.uncertain { text-decoration: underline dotted var(--v-text-muted) 2px; text-underline-offset: 4px; cursor: help; }
+.slot {
+  display: inline-block; padding: 0 6px; border-radius: 5px; font-weight: 600; cursor: help;
+  color: var(--v-accent-text); background: var(--v-accent-wash);
+  border-bottom: 2px dashed var(--v-accent-text);
+}
+.hl-mark { display: inline-block; vertical-align: -2px; margin-left: 3px; line-height: 0; }
+@keyframes v-flash {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; background-color: transparent; }
+  25%, 70% { box-shadow: 0 0 0 4px var(--v-accent); background-color: var(--v-accent-wash); }
+}
+.flash-passage { border-radius: 4px; animation: v-flash 2.2s var(--v-ease-inout) both; }
+@media (prefers-reduced-motion: reduce) {
+  .flash-passage { animation: none; box-shadow: 0 0 0 3px var(--v-accent); background-color: var(--v-accent-wash); }
+}
+@media print {
+  .tip[data-tip]::after { display: none !important; }
+  details > summary { list-style: none; }
+}

@@ -19,7 +19,12 @@
     "eval:benchmark": "node --env-file-if-exists=.env.local --no-warnings scripts/eval-benchmark.ts",
     "test:measure": "node --env-file-if-exists=.env.local --no-warnings scripts/test-measure.ts",
     "test:benchmark": "node --env-file-if-exists=.env.local --no-warnings scripts/test-benchmark.ts",
-    "test:examiner": "node --env-file-if-exists=.env.local --no-warnings scripts/test-examiner.ts"
+    "test:examiner": "node --env-file-if-exists=.env.local --no-warnings scripts/test-examiner.ts",
+    "test:blend": "node --no-warnings scripts/test-blend.ts",
+    "tune-links": "node --env-file-if-exists=.env.local --no-warnings scripts/tune-links.ts",
+    "test:coach": "node --env-file-if-exists=.env.local --no-warnings scripts/test-coach.ts",
+    "demo:add": "node --no-warnings scripts/add-demo-report.ts",
+    "verify:bundle": "node --no-warnings scripts/verify-trace.ts"
   },
   "dependencies": {
     "next": "^15.1.0",

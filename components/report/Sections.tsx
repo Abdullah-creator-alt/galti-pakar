@@ -1,8 +1,9 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import { BAND_LABEL, examinerAgreement, missingRoles } from "@/lib/derive";
 import type { Band, EssayReport, ParagraphRole, RubricKey } from "@/lib/types";
+import type { ReportExtras } from "@/lib/types.extras";
 import { BandPill, Button, StateIcon, ToneCard, bandStyle, stateText } from "@/components/ui";
 
 /* ---------- summary strip (joined tiles) ---------- */
@@ -13,7 +14,7 @@ export function SummaryStrip({ report }: { report: EssayReport }) {
     { label: "Overall score", value: `${report.overallScore.toFixed(1)} / ${report.overallOutOf}`, state: "ok" as const, bandText: bandStyle[report.verdict].text },
     { label: "Word count", value: String(report.wordCount), state: "ok" as const },
     { label: "Paragraphs", value: String(report.paragraphs.length), state: "ok" as const },
-    { label: "Examiners agree", value: a.total ? `${a.modalCount} of ${a.total}` : "None", state: a.state },
+    { label: "AI runs agree", value: a.total ? `${a.modalCount} of ${a.total}` : "None", state: a.state },
   ];
   return (
     <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[12px] border border-v-border bg-v-border sm:grid-cols-4">
@@ -178,10 +179,51 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-export function BeforeAfter({ report }: { report: EssayReport }) {
+const SLOT_RE = /\[[^\[\]]+\]/g;
+
+/**
+ * The improved paragraph with bracketed slots drawn as dashed chips (a slot is a prompt to add a verified fact of your
+ * own) and, when "Show changes" is on, added phrases marked. Slots are never split by a diff boundary.
+ */
+function renderImproved(text: string, original: string, added: string[] | undefined, changes: boolean): ReactNode[] {
+  const slots = [...text.matchAll(SLOT_RE)].filter((m) => !original.includes(m[0])).map((m) => ({ start: m.index!, end: m.index! + m[0].length }));
+  const adds: { start: number; end: number }[] = [];
+  if (changes) {
+    for (const ph of added ?? []) {
+      const at = text.indexOf(ph);
+      if (at < 0) continue;
+      let start = at;
+      let end = at + ph.length;
+      for (const sl of slots) if (start < sl.end && end > sl.start) { start = Math.min(start, sl.start); end = Math.max(end, sl.end); }
+      adds.push({ start, end });
+    }
+  }
+  const cuts = new Set<number>([0, text.length]);
+  for (const r of [...slots, ...adds]) { cuts.add(r.start); cuts.add(r.end); }
+  const pts = [...cuts].sort((x, y) => x - y);
+  const out: ReactNode[] = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [x, y] = [pts[i], pts[i + 1]];
+    const seg = text.slice(x, y);
+    const inSlot = slots.some((r) => r.start <= x && r.end >= y);
+    const inAdd = adds.some((r) => r.start <= x && r.end >= y);
+    if (inSlot)
+      out.push(
+        <span key={i} className={`slot tip ${inAdd ? "diff-add" : ""}`} tabIndex={0} data-tip="Add a verified fact of your own" aria-label={`${seg}. Add a verified fact of your own.`}>
+          {seg}
+        </span>,
+      );
+    else if (inAdd) out.push(<span key={i} className="diff-add">{seg}</span>);
+    else out.push(<Fragment key={i}>{seg}</Fragment>);
+  }
+  return out;
+}
+
+export function BeforeAfter({ report, rewriteExtras }: { report: EssayReport; rewriteExtras?: ReportExtras["rewriteExtras"] }) {
   const [changes, setChanges] = useState(true);
   const r = report.rewrite;
   const n = report.paragraphs.findIndex((p) => p.id === r.paragraphId) + 1;
+  const notes = rewriteExtras?.changeNotes ?? [];
   return (
     <div>
       <div className="mb-3 flex items-center justify-between gap-3">
@@ -203,11 +245,23 @@ export function BeforeAfter({ report }: { report: EssayReport }) {
           <CopyButton text={r.original} />
         </ToneCard>
         <ToneCard title="A stronger version (machine-written)" tone="good">
-          <p className="text-[16px] leading-[1.75] text-v-text">{marked(r.improved, r.added, "diff-add", changes)}</p>
+          <p className="text-[16px] leading-[1.75] text-v-text">{renderImproved(r.improved, r.original, r.added, changes)}</p>
           <CopyButton text={r.improved} />
         </ToneCard>
       </div>
-      <p className="mt-3 text-[12.5px] text-v-text-muted">This rewrite is a model example, written by AI. It is not a replacement for your own words.</p>
+      {notes.length > 0 && (
+        <div className="mt-4 rounded-[12px] border border-v-border bg-v-surface p-4">
+          <p className="font-data text-[10.5px] font-bold uppercase tracking-[0.14em] text-v-accent-text">What changed and why</p>
+          <ul className="mt-2 space-y-2">
+            {notes.map((c, i) => (
+              <li key={i} className="text-[14px] leading-snug text-v-text-secondary">
+                <span className="font-semibold text-v-text">{c.what}</span> {c.why}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <p className="mt-3 text-[12.5px] text-v-text-muted">Model paragraph for practice. In the exam, write your own. It is written by AI and is not a replacement for your own words.</p>
     </div>
   );
 }
@@ -224,6 +278,9 @@ const DIM_LABEL: Record<RubricKey, string> = {
   language: "Language",
 };
 
+/** Display label for an AI run: older data calls them "Examiner A", which would suggest independent people. */
+export const runLabel = (label: string) => label.replace(/^Examiner/i, "AI run");
+
 export function ExaminerPanel({ report }: { report: EssayReport }) {
   const a = examinerAgreement(report.examiners);
   const keys = Object.keys(DIM_LABEL) as RubricKey[];
@@ -232,20 +289,20 @@ export function ExaminerPanel({ report }: { report: EssayReport }) {
     <div>
       {a.total === 1 ? (
         <p className="mb-4 flex items-center gap-2 text-[15px] font-semibold text-v-text">
-          <StateIcon state="absent" /> Scored by one examiner
+          <StateIcon state="absent" /> Scored by one AI run
         </p>
       ) : (
         <p className="mb-4 flex items-start gap-2 text-[15px] font-semibold text-v-text">
           <span className="mt-1 shrink-0"><StateIcon state={a.state} /></span>
-          {a.agree ? "Examiners agree" : `Examiners differ on: ${names.join(", ")}`}
+          {a.agree ? "AI runs agree" : `AI runs differ on: ${names.join(", ")}`}
         </p>
       )}
       <ul className="space-y-2">
         {report.examiners.map((e) => (
           <li key={e.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-[10px] border border-v-border bg-v-card px-4 py-3">
             <div className="min-w-[130px]">
-              <p className="text-[14px] font-bold text-v-text">{e.label}</p>
-              <p className="font-data text-[10px] uppercase tracking-[0.12em] text-v-text-muted">AI examiner</p>
+              <p className="text-[14px] font-bold text-v-text">{runLabel(e.label)}</p>
+              <p className="font-data text-[10px] uppercase tracking-[0.12em] text-v-text-muted">AI run</p>
             </div>
             <BandPill band={e.band} small />
             <span className="font-data text-[16px] font-bold text-v-text">{e.overall.toFixed(1)}<span className="text-[11px] font-medium text-v-text-muted"> / {report.overallOutOf}</span></span>
@@ -256,7 +313,7 @@ export function ExaminerPanel({ report }: { report: EssayReport }) {
                   <li
                     key={k}
                     title={`${DIM_LABEL[k]}: ${BAND_LABEL[e.dimensions[k]]}`}
-                    aria-label={`${DIM_LABEL[k]}: ${BAND_LABEL[e.dimensions[k]]}${differs ? ", examiners differ" : ""}`}
+                    aria-label={`${DIM_LABEL[k]}: ${BAND_LABEL[e.dimensions[k]]}${differs ? ", AI runs differ" : ""}`}
                     className={`h-3 w-3 rounded-full ${bandStyle[e.dimensions[k]].dot} ${differs ? "ring-2 ring-v-flag ring-offset-2 ring-offset-v-card" : ""}`}
                   />
                 );
@@ -266,13 +323,15 @@ export function ExaminerPanel({ report }: { report: EssayReport }) {
         ))}
       </ul>
       <p className="mt-3 text-[12.5px] text-v-text-muted">
-        Dots run in rubric order: {keys.map((k) => DIM_LABEL[k]).join(", ")}. An amber ring marks a dimension where examiners differ. Disagreement is information, not an error.
+        Dots run in rubric order: {keys.map((k) => DIM_LABEL[k]).join(", ")}. An amber ring marks a dimension where the AI runs differ. These are repeated runs of the same AI model, so they are not independent opinions. Disagreement is information, not an error.
       </p>
     </div>
   );
 }
 
 export function verdictSentence(report: EssayReport): { range: string; text: string } {
+  // Without any AI run (a partial analysis) the verdict rests on the measurements alone, and the page says so.
+  if (report.examiners.length === 0) return { range: BAND_LABEL[report.verdict], text: "This verdict comes from the measured analysis only; no AI examiner scores are included." };
   const a = examinerAgreement(report.examiners);
   const [lo, hi] = a.range;
   const range = lo === hi ? BAND_LABEL[lo] : `${BAND_LABEL[lo]} to ${BAND_LABEL[hi]}`;
@@ -281,7 +340,7 @@ export function verdictSentence(report: EssayReport): { range: string; text: str
   const top = (Object.entries(counts) as [Band, number][]).sort((x, y) => y[1] - x[1])[0];
   const text =
     a.total === 1
-      ? `One examiner placed this in the ${BAND_LABEL[top[0]]} band.`
-      : `${top[1]} of ${a.total} examiners placed this in the ${BAND_LABEL[top[0]]} band.`;
+      ? `One AI run placed this in the ${BAND_LABEL[top[0]]} band.`
+      : `${top[1]} of ${a.total} AI runs placed this in the ${BAND_LABEL[top[0]]} band.`;
   return { range, text };
 }

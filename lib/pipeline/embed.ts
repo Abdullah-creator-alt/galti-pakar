@@ -59,3 +59,6 @@ export async function embedTexts(texts: string[], opts: { retries?: number; base
 export function embedCallCount(textCount: number): number {
   return Math.ceil(textCount / EMBED_BATCH_LIMIT);
 }
+
+/** The request-scoped embedding cache (one per essay request). See sharedEmbed.ts. */
+export { createSharedEmbed as createRequestEmbed } from "./sharedEmbed.ts";

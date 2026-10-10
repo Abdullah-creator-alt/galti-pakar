@@ -7,10 +7,10 @@ export const GEMINI_VISION_MODEL = "gemini-3.6-flash";
 /** Tried in order when the primary model is overloaded (503/429) or slow. */
 /** Examiner second opinion: primary model, then fallbacks when it is overloaded (429/503) or slow. */
 export const GEMINI_EXAMINER_MODEL = "gemini-3.6-flash";
-export const GEMINI_EXAMINER_FALLBACKS = ["gemini-3-flash-preview", "gemini-3.8-flash"] as const;
+export const GEMINI_EXAMINER_FALLBACKS = ["gemini-3-flash-preview", "gemini-3.8-flash", "gemini-3.1-flash-lite"] as const;
 export const EXAMINER_TEMPERATURE = 0.3;
 
-export const GEMINI_VISION_FALLBACKS = ["gemini-3-flash-preview", "gemini-3.8-flash"] as const;
+export const GEMINI_VISION_FALLBACKS = ["gemini-3-flash-preview", "gemini-3.8-flash", "gemini-3.1-flash-lite"] as const;
 export const GEMINI_EMBEDDING_MODEL = "gemini-embedding-001";
 export const EMBEDDING_DIMENSIONS = 768;
 
@@ -68,3 +68,42 @@ export const BENCHMARK = {
  * limit is reported as failed and the others carry on. The stage itself cannot be cancelled, only abandoned.
  */
 export const MEASURE_STAGE_TIMEOUT_MS = { structure: 30_000, analysis: 25_000, benchmark: 25_000 } as const;
+
+/** Coach step (fixes + model paragraph). Primary model, then fallbacks when it is overloaded (429/503) or slow. */
+export const GEMINI_COACH_MODEL = "gemini-3.6-flash";
+export const GEMINI_COACH_FALLBACKS = ["gemini-3-flash-preview", "gemini-3.8-flash", "gemini-3.1-flash-lite"] as const;
+export const COACH_TEMPERATURE = 0.4;
+export const COACH = {
+  /** Fix title and body limits, in words. Longer output is cut at a sentence boundary. */
+  TITLE_MAX_WORDS: 8,
+  BODY_MAX_WORDS: 60,
+  QUOTE_MAX_WORDS: 25,
+  /** The rewrite must stay within this fraction of the original paragraph length. */
+  LENGTH_TOLERANCE: 0.3,
+  MAX_SLOTS: 3,
+  MAX_CHANGE_NOTES: 3,
+  CHANGE_NOTE_MAX_WORDS: 25,
+  /** At most this many removed / added phrases are returned (the longest). */
+  MAX_DIFF_PHRASES: 6,
+  MAX_TARGET_SENTENCES: 3,
+  MAX_BENCHMARK_INSPIRATION: 3,
+  FIX_COUNT: 3,
+} as const;
+
+/** Limits and soft timeouts for the end-to-end pipeline behind /api/analyze. */
+export const PIPELINE = {
+  /** The whole request. The route's maxDuration is 120 s. */
+  OVERALL_MS: 100_000,
+  HANDWRITING_MS: 45_000,
+  /** The parallel measuring stage (structure, genericness and drift, benchmark). */
+  MEASURE_MS: 30_000,
+  EXAMINER_MS: 45_000,
+  COACH_MS: 40_000,
+  MAX_ESSAY_WORDS: 6000,
+  /** Largest upload we accept. Vercel itself rejects bodies above about 4.5 MB, and the UI sends under 3.8 MB. */
+  MAX_BODY_BYTES: 4.4 * 1024 * 1024,
+  EXAMINER_RUNS: 2,
+} as const;
+
+/** Models for the structure step (tried in order when one is overloaded or slow). */
+export const GEMINI_STRUCTURE_MODELS = ["gemini-3.6-flash", "gemini-3-flash-preview", "gemini-3.8-flash", "gemini-3.1-flash-lite"] as const;
