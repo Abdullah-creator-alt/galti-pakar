@@ -13,3 +13,6 @@ test-results/
 playwright-report/
 
 deck/preview/
+
+# PowerPoint lock files
+~$*
