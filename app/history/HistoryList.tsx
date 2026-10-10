@@ -46,10 +46,10 @@ export function HistoryList() {
   if (items.length === 0) {
     return (
       <div className="py-16 text-center">
-        <h2 className="text-2xl font-extrabold text-v-text">No essays yet</h2>
-        <p className="mx-auto mt-3 max-w-md text-v-text-secondary">Upload a photo of a handwritten practice essay and your first report will appear here. Reports are kept in this browser only.</p>
+        <h2 className="text-2xl font-extrabold text-v-text">No CSS practice essays yet</h2>
+        <p className="mx-auto mt-3 max-w-md text-v-text-secondary">Upload a photo of a handwritten CSS practice essay and your first report will appear here. Reports are kept in this browser only.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <ButtonLink href="/new">Upload an essay</ButtonLink>
+          <ButtonLink href="/new">Upload a CSS essay</ButtonLink>
           <ButtonLink href="/report/example" variant="secondary" arrow={false}>Open the sample report</ButtonLink>
         </div>
       </div>

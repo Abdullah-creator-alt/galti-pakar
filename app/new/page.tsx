@@ -7,9 +7,9 @@ export default function NewEssayPage() {
   return (
     <FlowShell step={1}>
       <FlowHeader
-        eyebrow="New essay"
-        title="Upload your handwritten essay"
-        lead="No account needed to try it. A photo from your phone is fine."
+        eyebrow="New CSS essay"
+        title="Upload your handwritten CSS essay"
+        lead="Photograph each page of your answer, outline included if you wrote one. No account needed, and a phone photo is fine."
       />
       <UploadForm />
       <SampleLinks />

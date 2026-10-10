@@ -22,7 +22,7 @@ for (const name of ["example", ...validFixtures]) {
           await seedBundle(page, b);
         }
         await page.goto(`/report/${id}`);
-        await expect(page.getByText("Essay report", { exact: true })).toBeVisible();
+        await expect(page.getByText("CSS essay report", { exact: true })).toBeVisible();
         await expect(page.locator("h1")).toBeVisible();
         expect(await page.evaluate(() => document.documentElement.getAttribute("data-theme"))).toBe(theme);
         expect(await hasHorizontalScroll(page), "page scrolls sideways").toBe(false);

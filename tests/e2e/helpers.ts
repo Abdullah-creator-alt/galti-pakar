@@ -126,13 +126,13 @@ export function parseMultipart(buf: Buffer, contentType: string): { fields: stri
 /** Picks photos on /new, fills the topic and waits for compression, ready to submit. */
 export async function fillUpload(page: Page, jpegs: { name: string; buffer: Buffer }[], topic = "Water scarcity in Pakistan") {
   await page.goto("/new");
-  await page.getByLabel("Essay topic").fill(topic);
+  await page.getByLabel("CSS essay topic").fill(topic);
   await page.locator('input[type="file"][multiple]').setInputFiles(jpegs.map((j) => ({ name: j.name, mimeType: "image/jpeg", buffer: j.buffer })));
   await expect(page.getByText(/after compression/)).toBeVisible({ timeout: 30_000 });
 }
 
 export async function submitUpload(page: Page) {
-  const submit = page.getByRole("button", { name: "Analyse my essay" });
+  const submit = page.getByRole("button", { name: "Analyse my CSS essay" });
   await expect(submit).toBeEnabled();
   await submit.click();
   await page.waitForURL("**/analysing");

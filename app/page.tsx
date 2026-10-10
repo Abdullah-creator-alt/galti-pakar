@@ -38,16 +38,16 @@ export default function Home() {
       <section style={{ background: "var(--v-bg-field)" }} className="border-b border-v-border">
         <Container className="grid items-center gap-12 pb-20 pt-16 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:pb-28 lg:pt-24">
           <div>
-            <div className="v-enter-fade"><Eyebrow>CSS essay feedback</Eyebrow></div>
+            <div className="v-enter-fade"><Eyebrow>CSS English Essay practice</Eyebrow></div>
             <h1 className="v-enter-rise mt-4 text-[clamp(40px,6vw,68px)] font-bold leading-[0.98] text-v-text">
-              Find out where your essay loses marks.
+              Find out where your CSS essay loses marks.
               <span className="block bg-gradient-to-r from-v-accent-text to-v-accent bg-clip-text text-transparent">Before the examiner does.</span>
             </h1>
             <p className="v-enter-rise mt-6 max-w-xl text-[17px] leading-relaxed text-v-text-secondary" style={{ animationDelay: "90ms" }}>
-              Photograph a handwritten practice essay. Galti Pakar reads it, marks strong and weak passages, shows where you drift off topic, and ranks the three fixes that matter most.
+              Photograph your handwritten CSS practice essay, outline included. Galti Pakar reads it, marks strong and weak passages, shows where you drift off the topic you chose, and ranks the three fixes that matter most before your next practice paper.
             </p>
             <div className="v-enter-fade mt-8 flex flex-wrap gap-3" style={{ animationDelay: "180ms" }}>
-              <ButtonLink href="/new">Upload an essay</ButtonLink>
+              <ButtonLink href="/new">Upload a CSS essay</ButtonLink>
               <ButtonLink href="/report/example" variant="secondary" arrow={false}>See an example report</ButtonLink>
             </div>
           </div>
@@ -58,8 +58,8 @@ export default function Home() {
         <ul className="grid gap-6 md:grid-cols-3">
           {[
             ["Where exactly", "Every passage is marked strong, weak or off-topic, with the reason one tap away."],
-            ["Why", "Seven rubric dimensions, scored by several AI examiners, with disagreement shown rather than hidden."],
-            ["What to fix", "Three ranked fixes and one paragraph rewritten, so you know what to do tonight."],
+            ["Why", "Seven practice-rubric dimensions (thesis, outline, argument, evidence, counter-argument, coherence and language), scored by several AI examiner runs, with disagreement shown rather than hidden."],
+            ["What to fix", "Three ranked fixes and one model paragraph, so you know what to work on before your next CSS practice essay."],
           ].map(([t, b]) => (
             <li key={t} className="rounded-[18px] border border-v-border bg-v-card p-7" style={{ boxShadow: "var(--v-elev-2)" }}>
               <h2 className="text-[20px] font-bold leading-tight text-v-text">{t}</h2>

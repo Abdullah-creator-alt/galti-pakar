@@ -79,10 +79,10 @@ test.describe("upload flow", () => {
     const headers: (string | undefined)[] = [];
     await mockAnalyze(page, { body: bundle, onRequest: (r) => void headers.push(r.request().headers()["x-debug"]) });
     await page.goto("/new?debug=1");
-    await page.getByLabel("Essay topic").fill("Water scarcity in Pakistan");
+    await page.getByLabel("CSS essay topic").fill("Water scarcity in Pakistan");
     await page.locator('input[type="file"][multiple]').setInputFiles([{ name: "a.jpg", mimeType: "image/jpeg", buffer: (await photos())[0].buffer }]);
     await expect(page.getByText(/after compression/)).toBeVisible({ timeout: 30_000 });
-    await page.getByRole("button", { name: "Analyse my essay" }).click();
+    await page.getByRole("button", { name: "Analyse my CSS essay" }).click();
     await page.waitForURL(`**/report/${bundle.report.id}`);
     expect(headers.at(-1)).toBe("1");
     await expect(page.getByTestId("stages-panel")).toBeVisible();

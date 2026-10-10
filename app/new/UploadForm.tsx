@@ -116,7 +116,7 @@ export function UploadForm() {
 
   const topicOk = topic.trim().length > 2;
   const ready = topicOk && prep.status === "ready";
-  const why = !topicOk && pages.length === 0 ? "Add a topic and at least one photo to continue." : !topicOk ? "Add the essay topic to continue." : pages.length === 0 ? "Add at least one photo to continue." : prep.status === "working" ? "Preparing your photos..." : prep.status === "too-large" ? "These pages are too large to send together. Remove a few, or retake them at a lower resolution." : "";
+  const why = !topicOk && pages.length === 0 ? "Add a topic and at least one photo to continue." : !topicOk ? "Add the CSS essay topic to continue." : pages.length === 0 ? "Add at least one photo to continue." : prep.status === "working" ? "Preparing your photos..." : prep.status === "too-large" ? "These pages are too large to send together. Remove a few, or retake them at a lower resolution." : "";
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -131,7 +131,7 @@ export function UploadForm() {
   return (
     <form onSubmit={submit} noValidate className="space-y-6">
       <div className="space-y-1.5">
-        <label htmlFor="topic" className="text-[13.5px] font-semibold text-v-text">Essay topic</label>
+        <label htmlFor="topic" className="text-[13.5px] font-semibold text-v-text">CSS essay topic</label>
         <input
           id="topic"
           list="topics"
@@ -143,7 +143,7 @@ export function UploadForm() {
           className="w-full rounded-[11px] border border-v-border bg-v-surface px-4 py-3 text-base text-v-text placeholder:text-v-text-muted transition-colors focus:border-v-accent focus:outline-none focus:ring-2 focus:ring-v-accent/25 sm:text-[15px]"
         />
         <datalist id="topics">{TOPICS.map((t) => <option key={t} value={t} />)}</datalist>
-        <p id="topic-hint" className="text-[12.5px] leading-snug text-v-text-muted">Type the topic you were given, or pick a past CSS topic below.</p>
+        <p id="topic-hint" className="text-[12.5px] leading-snug text-v-text-muted">Type the topic you chose for this practice essay, or try one of these example topics.</p>
         <div className="flex flex-wrap gap-2 pt-1">
           {TOPICS.slice(0, 3).map((t) => (
             <button key={t} type="button" onClick={() => setTopic(t)} className="min-h-[44px] rounded-full border border-v-border px-4 text-[13px] text-v-text-secondary transition-colors hover:border-v-border-strong">
@@ -167,8 +167,8 @@ export function UploadForm() {
             </svg>
           </span>
           <div>
-            <p className="text-[16px] font-bold text-v-text">Add photos of your essay</p>
-            <p className="mt-1 text-[13.5px] leading-snug text-v-text-secondary">One photo per page. We read them in order. JPEG or PNG; photos are shrunk on your device before they are sent.</p>
+            <p className="text-[16px] font-bold text-v-text">Add photos of your answer pages</p>
+            <p className="mt-1 text-[13.5px] leading-snug text-v-text-secondary">One photo per page, in order. Put your outline first if you wrote one. We read the pages in order. JPEG or PNG; photos are shrunk on your device before they are sent.</p>
           </div>
         </div>
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
@@ -191,7 +191,7 @@ export function UploadForm() {
               <li key={p.id}>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] border border-v-device-border bg-v-device-bg">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.url} alt={`Page ${i + 1} of your essay`} className="absolute inset-0 h-full w-full object-contain" />
+                  <img src={p.url} alt={`Page ${i + 1} of your CSS essay`} className="absolute inset-0 h-full w-full object-contain" />
                   <span className="absolute left-2 top-2 rounded bg-v-device-surface px-1.5 py-0.5 font-data text-[10px] font-bold uppercase tracking-[0.1em] text-v-device-text">Page {i + 1}</span>
                 </div>
                 <div className="mt-1.5 flex items-center justify-between">
@@ -225,7 +225,7 @@ export function UploadForm() {
           className="v-btn-primary h-14 w-full rounded-full bg-v-accent-strong text-[15px] font-bold tracking-tight text-v-on-accent disabled:cursor-not-allowed disabled:opacity-60"
           style={ready ? { boxShadow: "var(--v-glow-cta)" } : undefined}
         >
-          Analyse my essay
+          Analyse my CSS essay
         </button>
         {!ready && <p id="submit-why" className="mt-2 text-center text-[13px] text-v-text-muted">{why}</p>}
         <p className="mt-3 text-center text-[12.5px] text-v-text-muted">

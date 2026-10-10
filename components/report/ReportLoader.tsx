@@ -52,7 +52,7 @@ export function ReportLoader({ id }: { id: string }) {
           Reports are kept in the browser that analysed them, and this one is not here. It may have been cleared, or opened on another device.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <ButtonLink href="/new">Analyse an essay</ButtonLink>
+          <ButtonLink href="/new">Analyse a CSS essay</ButtonLink>
           <ButtonLink href="/report/example" variant="secondary" arrow={false}>Open the sample report</ButtonLink>
         </div>
       </main>

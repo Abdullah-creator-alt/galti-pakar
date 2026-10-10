@@ -10,9 +10,9 @@ import { saveBundle } from "@/lib/storage";
 
 const STEPS = [
   { title: "Reading the handwriting", active: "Turning your photos into text and noting words that are hard to read", done: "Handwriting read" },
-  { title: "Checking structure and evidence", active: "Finding your position, claims and the evidence behind each one", done: "Structure checked" },
+  { title: "Checking structure and evidence", active: "Finding your thesis, claims and the evidence behind each one", done: "Structure checked" },
   { title: "Measuring drift and genericness", active: "Comparing each paragraph with the topic and looking for generic wording", done: "Measurements done" },
-  { title: "Writing the verified feedback", active: "Scoring, checking every quote against your essay, and writing your fixes", done: "Feedback written" },
+  { title: "Writing the verified feedback", active: "Scoring the seven practice-rubric dimensions, checking every quote against your essay, and writing your fixes", done: "Feedback written" },
 ];
 
 /**
@@ -123,7 +123,7 @@ export function Processing() {
     <div>
       <div className="text-center">
         <Eyebrow>Analysing</Eyebrow>
-        <h1 className="mt-3 text-[clamp(26px,5vw,34px)] font-extrabold leading-[1.1] text-v-text">Reading your essay</h1>
+        <h1 className="mt-3 text-[clamp(26px,5vw,34px)] font-extrabold leading-[1.1] text-v-text">Reading your CSS essay</h1>
         {topic && <p className="mt-2 text-[15px] text-v-text-secondary">{topic}</p>}
       </div>
 

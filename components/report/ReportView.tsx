@@ -63,7 +63,7 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
         <div className="mx-auto max-w-[1120px] px-4 pb-14 pt-12 sm:px-8 lg:pt-16">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
-              <Eyebrow>Essay report</Eyebrow>
+              <Eyebrow>CSS essay report</Eyebrow>
               <h1 className="mt-4 text-[clamp(30px,4.2vw,50px)] font-extrabold leading-[1.08] text-v-text">{report.topic}</h1>
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 <BandPill band={report.verdict} label={v.range} />
@@ -151,7 +151,7 @@ export function ReportView({ bundle, source }: { bundle: AnalysisBundle; source:
         {debug && <StagesPanel stages={debug.stages} />}
         <p className="no-print mt-8 text-center">
           <Link href="/new" className="inline-flex min-h-[44px] items-center text-sm font-semibold text-v-accent-text underline underline-offset-4">
-            Analyse another essay
+            Analyse another CSS essay
           </Link>
         </p>
       </main>
