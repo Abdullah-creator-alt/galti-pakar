@@ -7,6 +7,16 @@ next-env.d.ts
 data/cache/
 data/reference-raw/*
 !data/reference-raw/README.md
+
+# ML training workspace: never commit data, checkpoints or virtualenvs
+training/**/.venv/
+training/**/data/
+training/**/artifacts/
+training/**/__pycache__/
+*.pt
+*.safetensors
+*.onnx
+
 tests/assets/private/
 tests/screenshots/
 test-results/

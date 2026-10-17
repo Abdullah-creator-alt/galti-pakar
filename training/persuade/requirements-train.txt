@@ -1,0 +1,11 @@
+# Training / evaluation environment (GPU machine). Preprocessing and its tests need only the Python standard library.
+# Install the torch build matching your CUDA version from https://pytorch.org first if the default wheel does not fit.
+torch>=2.4
+transformers>=4.46,<5      # 4.46.3 was verified to import with torch 2.4; newer 4.x is fine on newer torch
+tokenizers>=0.20           # fast tokenizers are required for character offset mapping
+numpy>=1.26
+safetensors>=0.4
+accelerate>=0.34           # optional: mixed precision / gradient accumulation helpers
+# Phase 5 (deployment evaluation only):
+onnx>=1.16
+onnxruntime>=1.19

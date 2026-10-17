@@ -13,6 +13,9 @@ import { structureInputSchema } from "./schema.ts";
 import { cosine } from "../pipeline/vecmath.ts";
 import { validateStructureAnalysis } from "./validate.ts";
 import type { AnalysisWarning, ArgumentElement, StructureAnalysis, StructureAnalysisInput, StructureFailure, StructureOutcome } from "./types.ts";
+import type { ClassifyFn } from "./classifier/types.ts";
+import { pythonClassify } from "./classifier/python_classifier.ts";
+import { fuseRoles } from "./classifier/fuse.ts";
 
 export type EmbedFn = (texts: string[]) => Promise<number[][]>;
 
@@ -23,6 +26,8 @@ export interface StructureDeps {
   extractorName?: string;
   /** Embedding call for the optional semantic signal. Required for `useSemanticSimilarity` to take effect. */
   embed?: EmbedFn;
+  /** Optional classifier call for hybrid / second-opinion argument span detection. */
+  classify?: ClassifyFn;
   now?: () => Date;
   /** Bounds for the model call, so a caller with a time budget can limit this stage. Defaults in config.ts. */
   extraction?: { timeoutMs?: number; maxAttempts?: number };
@@ -75,8 +80,27 @@ export async function analyzeEssayStructure(input: StructureAnalysisInput, deps:
   const extraction = await extractElements(essay, topic, complete, deps.extraction);
   if (!extraction.ok) return { ok: false, error: extraction.error };
 
+  // Phase 4: Hybrid integration with specialized argument classifier (default: off)
+  const mode = (process.env.STRUCTURE_CLASSIFIER_MODE ?? "hybrid") as "off" | "shadow" | "hybrid";
+  let fusedRawElements = extraction.elements;
+  // Determine which classifier to use: injected or default Python bridge
+  const classifyFn: ClassifyFn | undefined = deps.classify ?? (mode !== "off" ? pythonClassify : undefined);
+  if (classifyFn) {
+    try {
+      const clfOutput = await classifyFn(text, essay.sentences);
+      if (clfOutput && clfOutput.candidates.length > 0) {
+        if (mode === "hybrid") {
+          fusedRawElements = fuseRoles(extraction.elements, clfOutput.candidates, { mode: "hybrid" });
+        }
+      }
+    } catch {
+      // Robust fallback: classifier errors never break Gemini analysis
+      warnings.push({ code: "classifier_failed", message: "Specialized classifier call failed; returned Gemini extraction." });
+    }
+  }
+
   const sentenceById = new Map(essay.sentences.map((s) => [s.id, s]));
-  const elements: ArgumentElement[] = extraction.elements.map((x, i) => {
+  const elements: ArgumentElement[] = fusedRawElements.map((x, i) => {
     const first = sentenceById.get(x.sentenceIds[0])!;
     const last = sentenceById.get(x.sentenceIds[x.sentenceIds.length - 1])!;
     return {
